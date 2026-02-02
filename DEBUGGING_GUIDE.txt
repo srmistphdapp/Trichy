@@ -1,0 +1,90 @@
+═══════════════════════════════════════════════════════════════
+DEBUGGING GUIDE: Scholar Not Showing in Interview Panel
+═══════════════════════════════════════════════════════════════
+
+STEPS TO DIAGNOSE:
+
+1. OPEN BROWSER CONSOLE (F12 or Ctrl+Shift+I)
+
+2. TRY TO CREATE A NEW INTERVIEW PANEL
+
+3. LOOK FOR LOGS STARTING WITH:
+   🔍 [Interview Component] Current user info:
+   
+   This shows you:
+   - name: Your logged-in user name
+   - role: Your role (should be something like "HOD")
+   - department: Your department (MUST match scholars' department)
+   - faculty: Your faculty (MUST match scholars' institution)
+
+4. SCROLL DOWN IN CONSOLE AND LOOK FOR:
+   📋 ===== DATABASE DIAGNOSTIC =====
+   
+   This shows you:
+   - "Unique INSTITUTIONS": All institution values in your database
+   - "Unique DEPARTMENTS": All department values in your database
+   - "Unique PROGRAMS": All program names in your database
+   
+   COMPARE THESE WITH YOUR USER INFO (step 3)
+
+5. LOOK FOR MATCHING STRATEGY LOGS:
+   
+   Three strategies are attempted in order:
+   
+   ✅ STRATEGY 1: Exact department code match
+      Look for messages like: "✅ Department match: ..."
+      If you see this, it means system found exact match
+      
+   ⚠️ STRATEGY 2: Text-based matching
+      Look for messages like: "⚠️ No department code match found. Trying text-based matching..."
+      This means code matching failed, trying fuzzy match
+      Look for: "✅ Text match (dept): ..." or "✅ Text match (program): ..."
+      
+   ❌ STRATEGY 3: Fallback to all records
+      Look for: "⚠️ Still no department match. Using all records from institution as fallback"
+      This means nothing matched, using all records
+      Check if this shows a positive number
+
+6. FINAL RESULT:
+   Look for: "✅ Final result: X examination records returned"
+   
+   - If X > 0: Scholars are being fetched correctly
+     BUT PANEL MIGHT BE EMPTY due to other issue
+   
+   - If X = 0: This is the REAL PROBLEM
+     Look at console to see which strategy failed and why
+
+═══════════════════════════════════════════════════════════════
+COMMON ISSUES AND SOLUTIONS:
+═══════════════════════════════════════════════════════════════
+
+ISSUE 1: "Unique INSTITUTIONS: [...]" doesn't include your faculty
+SOLUTION:
+  - Copy the exact institution name from console
+  - Your logged-in user's faculty doesn't match this value
+  - UPDATE: currentUser.faculty needs to match database institution
+
+ISSUE 2: "Unique DEPARTMENTS: [...]" doesn't include your department  
+SOLUTION:
+  - Copy the exact department name from console
+  - Your logged-in user's department doesn't match this value
+  - UPDATE: currentUser.department needs to match database department
+
+ISSUE 3: All strategies fail but "Final result: X records"
+SOLUTION:
+  - Check if X is > 0
+  - If yes, scholars ARE being loaded (use fallback strategy)
+  - If no, check database connectivity and permissions
+
+═══════════════════════════════════════════════════════════════
+QUICK REFERENCE: What Should Match
+═══════════════════════════════════════════════════════════════
+
+Your logged-in user info          Database examination_records
+─────────────────────────────────────────────────────────────
+currentUser.faculty      ←→       institution column
+currentUser.department   ←→       department OR program columns
+
+ALL MUST MATCH FOR SCHOLARS TO SHOW!
+
+═══════════════════════════════════════════════════════════════

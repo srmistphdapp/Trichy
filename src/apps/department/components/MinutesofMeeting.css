@@ -1,0 +1,1245 @@
+/* Print styles for Minutes of Meeting */
+.print-wrapper {
+    width: 100%;
+}
+
+/* Screen styles for header layout */
+@media screen {
+    .print-header-layout {
+        position: relative;
+        display: flex;
+        align-items: flex-start;
+        justify-content: center;
+        margin-bottom: 2rem;
+        width: 100%;
+        min-height: 96px; /* Increased for larger logo */
+    }
+    
+    .print-logo {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 96px; /* Increased from 80px to 96px */
+        height: 96px; /* Increased from 80px to 96px */
+        flex-shrink: 0;
+    }
+    
+    .print-header-text {
+        width: 100%;
+        text-align: center;
+        padding-top: 8px; /* Slightly increased padding */
+        margin: 0 auto;
+    }
+    
+    .print-logo-spacing {
+        margin-right: 1.5rem;
+    }
+    
+    .print-text-spacing {
+        margin-left: 0;
+    }
+}
+
+@media print {
+    /* Remove browser default print headers/footers and preserve screen appearance */
+    @page {
+        margin: 0.5in;
+        size: A4;
+    }
+    
+    /* Ensure content is visible in print */
+    * {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+        color-adjust: exact !important;
+    }
+    
+    /* Hide browser print elements and preserve exact screen layout */
+    body {
+        margin: 0 !important;
+        padding: 0 !important;
+        font-family: inherit !important;
+        background: white !important;
+        color: black !important;
+    }
+    
+    .print-wrapper {
+        width: 100% !important;
+        max-width: none !important;
+        background: white !important;
+        color: black !important;
+    }
+    
+    /* Preserve exact screen container styling */
+    .minutes-container {
+        margin: 0 auto !important;
+        padding: 1.5rem !important; /* Slightly reduced for print */
+        max-width: none !important; /* Remove max-width for print */
+        background: white !important;
+        box-shadow: none !important;
+        font-size: inherit !important; /* Keep screen font size */
+        line-height: inherit !important; /* Keep screen line height */
+        color: black !important;
+        display: block !important;
+        visibility: visible !important;
+    }
+    
+    /* Hide action buttons */
+    .print-hidden {
+        display: none !important;
+        visibility: hidden !important;
+    }
+    
+    /* Preserve exact screen header styling */
+    .text-center {
+        text-align: center !important;
+        color: black !important;
+    }
+    
+    /* Keep header layout exactly as screen */
+    .print-header-layout {
+        position: relative !important;
+        display: flex !important;
+        align-items: flex-start !important;
+        justify-content: center !important;
+        margin-bottom: 1.5rem !important; /* Slightly reduced for print */
+        width: 100% !important;
+        min-height: 96px !important; /* Same as screen */
+        background: white !important;
+        color: black !important;
+    }
+    
+    .print-logo {
+        position: absolute !important;
+        left: 0 !important;
+        top: 0 !important;
+        width: 96px !important; /* Same as screen */
+        height: 96px !important; /* Same as screen */
+        flex-shrink: 0 !important;
+        display: block !important;
+        visibility: visible !important;
+    }
+    
+    .print-header-text {
+        width: 100% !important;
+        text-align: center !important;
+        padding-top: 8px !important; /* Same as screen */
+        margin: 0 auto !important;
+        color: black !important;
+        display: block !important;
+        visibility: visible !important;
+    }
+    
+    /* Keep header colors and fonts exactly as screen */
+    h1 {
+        color: #2563eb !important; /* Same blue as screen */
+        font-size: 1.25rem !important; /* Same as screen (text-xl) */
+        font-weight: bold !important;
+        margin: 0.25rem 0 !important; /* Same as screen (mb-1) */
+        display: block !important;
+        visibility: visible !important;
+    }
+    
+    h2 {
+        color: #dc2626 !important; /* Same red as screen */
+        font-size: 1.125rem !important; /* Same as screen (text-lg) */
+        font-weight: bold !important;
+        margin: 0.25rem 0 !important; /* Same as screen (mb-1) */
+        display: block !important;
+        visibility: visible !important;
+    }
+    
+    h3 {
+        color: black !important;
+        font-size: 1.125rem !important; /* Same as screen (text-lg) */
+        font-weight: bold !important;
+        margin: 0.5rem 0 !important; /* Same as screen */
+        display: block !important;
+        visibility: visible !important;
+    }
+    
+    /* Keep logo size exactly as screen */
+    img {
+        max-width: 96px !important; /* Same as screen */
+        max-height: 96px !important; /* Same as screen */
+        flex-shrink: 0 !important;
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+    
+    /* Preserve exact screen paragraph styling */
+    p {
+        margin: 0.75rem 0 !important; /* Same as screen */
+        text-align: justify !important;
+        font-size: 0.875rem !important; /* Same as screen (text-sm) */
+        line-height: 1.75 !important; /* Same as screen (leading-loose) */
+        color: black !important;
+        display: block !important;
+        visibility: visible !important;
+    }
+    
+    /* Center specific paragraphs exactly as screen */
+    .text-center p {
+        text-align: center !important;
+        font-weight: bold !important;
+        color: black !important;
+    }
+    
+    /* Preserve exact screen table styling */
+    .flex.justify-center {
+        display: flex !important;
+        justify-content: center !important;
+        width: 100% !important;
+    }
+    
+    table {
+        width: auto !important; /* Let tables size naturally for print */
+        border-collapse: collapse !important;
+        margin: 1rem auto !important; /* Same as screen */
+        page-break-inside: avoid;
+        font-size: inherit !important; /* Keep screen font size */
+        display: table !important;
+        visibility: visible !important;
+        color: black !important;
+        background: white !important;
+    }
+    
+    /* Specific handling for DRCC Members table */
+    .drcc-table-section {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+    }
+    
+    /* If DRCC table is too long, allow it to break but keep header with content */
+    .drcc-table-container {
+        page-break-inside: auto !important;
+    }
+    
+    .drcc-table-container table {
+        page-break-inside: auto !important;
+    }
+    
+    .drcc-table-container thead {
+        display: table-header-group !important;
+    }
+    
+    .drcc-table-container tbody {
+        display: table-row-group !important;
+    }
+    
+    /* Ensure table headers repeat on new pages */
+    .drcc-table-container thead tr {
+        page-break-inside: avoid !important;
+        page-break-after: avoid !important;
+    }
+    
+    /* Prevent orphaned table rows */
+    .drcc-table-container tbody tr {
+        page-break-inside: avoid !important;
+    }
+    
+    /* Keep at least 2 rows together */
+    .drcc-table-container tbody tr:nth-child(-n+2) {
+        page-break-after: avoid !important;
+    }
+    
+    table, th, td {
+        border: 1px solid black !important;
+        padding: 0.5rem 0.75rem !important; /* Same as screen (py-2 px-3) */
+        color: black !important;
+        background: white !important;
+    }
+    
+    th {
+        font-weight: bold !important;
+        text-align: center !important;
+        background-color: white !important; /* White background for print */
+        color: black !important;
+    }
+    
+    td {
+        text-align: left !important;
+        color: black !important;
+        background: white !important;
+    }
+    
+    /* Keep exact screen spacing */
+    .space-y-6 > * + * {
+        margin-top: 1.5rem !important; /* Same as screen */
+    }
+    
+    .mt-8 {
+        margin-top: 2rem !important; /* Same as screen */
+    }
+    
+    .mt-12 {
+        margin-top: 3rem !important; /* Same as screen */
+    }
+    
+    /* Signature section spacing exactly as screen */
+    div[style*="marginTop: '5cm'"] {
+        margin-top: 4cm !important; /* Slightly reduced for print */
+    }
+    
+    .flex.justify-between.items-end {
+        margin-top: 4cm !important;
+        display: flex !important;
+        justify-content: space-between !important;
+        align-items: flex-end !important;
+    }
+    
+    /* Remove any hover effects and edit indicators */
+    span:hover {
+        background-color: transparent !important;
+    }
+    
+    .cursor-pointer {
+        cursor: default !important;
+        background-color: transparent !important;
+    }
+    
+    .border-dotted {
+        border: none !important;
+    }
+    
+    /* Ensure all text is visible */
+    span, div {
+        color: black !important;
+        display: inline !important;
+        visibility: visible !important;
+    }
+    
+    /* Page break controls */
+    .page-break {
+        page-break-before: always;
+    }
+    
+    .no-break {
+        page-break-inside: avoid;
+    }
+    
+    /* Hide edit icons */
+    .lucide, .lucide-edit-3 {
+        display: none !important;
+        visibility: hidden !important;
+    }
+    
+    /* Remove gray backgrounds for print */
+    .bg-gray-50 {
+        background-color: white !important;
+        color: black !important;
+    }
+    
+    /* Selected candidates table - keep exact screen styling */
+    .selected-candidates-table {
+        width: 100% !important;
+        max-width: 900px !important; /* Same as screen */
+        border-collapse: collapse !important;
+        margin: 1.5rem auto !important; /* Same as screen */
+        font-size: 0.7rem !important; /* Same as screen */
+        table-layout: fixed !important;
+        display: table !important;
+        visibility: visible !important;
+        color: black !important;
+        background: white !important;
+    }
+    
+    .selected-candidates-table th,
+    .selected-candidates-table td {
+        border: 1px solid #000 !important;
+        padding: 3px 4px !important; /* Same as screen */
+        text-align: center !important;
+        vertical-align: middle !important;
+        word-wrap: break-word !important;
+        line-height: 1.1 !important; /* Same as screen */
+        color: black !important;
+        background: white !important;
+    }
+    
+    .selected-candidates-table th {
+        font-weight: bold !important;
+        font-size: 0.65rem !important; /* Same as screen */
+        padding: 4px 4px !important; /* Same as screen */
+        background-color: white !important;
+        color: black !important;
+    }
+    
+    /* Remove any underlines from editable fields in print */
+    .selected-candidates-table span {
+        border-bottom: none !important;
+        text-decoration: none !important;
+        border: none !important;
+        color: black !important;
+        background: transparent !important;
+    }
+    
+    /* Ensure all content is visible */
+    * {
+        color: black !important;
+        background-color: transparent !important;
+    }
+    
+    /* Override any hidden elements except buttons */
+    div:not(.print-hidden), 
+    span:not(.lucide):not(.lucide-edit-3), 
+    p, h1, h2, h3, table, th, td {
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+    
+    span {
+        display: inline !important;
+    }
+    
+    table {
+        display: table !important;
+    }
+    
+    th, td {
+        display: table-cell !important;
+    }
+}
+
+/* Selected Candidates Table - Screen styles - No scrolling */
+.selected-candidates-table {
+    width: 100%;
+    max-width: 900px;
+    border-collapse: collapse;
+    margin: 1.5rem auto;
+    font-size: 0.7rem;
+    table-layout: fixed;
+}
+
+.selected-candidates-table th,
+.selected-candidates-table td {
+    border: 1px solid #000;
+    padding: 3px 4px; /* Reduced padding for better fit */
+    text-align: center;
+    vertical-align: middle;
+    word-wrap: break-word;
+    line-height: 1.1;
+    overflow-wrap: break-word;
+}
+
+.selected-candidates-table th {
+    font-weight: bold;
+    font-size: 0.65rem;
+    padding: 4px 4px;
+    vertical-align: middle;
+}
+
+/* Remove underlines from all spans inside table */
+.selected-candidates-table span {
+    border-bottom: none !important;
+    text-decoration: none !important;
+    border: none !important;
+}
+
+/* Make editable cells more visible */
+.selected-candidates-table td span {
+    display: block;
+    width: 100%;
+    min-height: 16px;
+    padding: 1px 2px;
+    border-radius: 2px;
+    font-size: 0.65rem;
+}
+
+.selected-candidates-table td span:hover {
+    background-color: #f3f4f6 !important;
+}
+
+/* Optimized column sizing - fits within page width */
+.selected-candidates-table th:nth-child(1),
+.selected-candidates-table td:nth-child(1) {
+    width: 6%; /* S. No */
+}
+
+.selected-candidates-table th:nth-child(2),
+.selected-candidates-table td:nth-child(2) {
+    width: 18%; /* Name */
+    text-align: left;
+}
+
+.selected-candidates-table th:nth-child(3),
+.selected-candidates-table td:nth-child(3) {
+    width: 14%; /* Application Number */
+}
+
+.selected-candidates-table th:nth-child(4),
+.selected-candidates-table td:nth-child(4) {
+    width: 10%; /* Category */
+}
+
+.selected-candidates-table th:nth-child(5),
+.selected-candidates-table td:nth-child(5) {
+    width: 8%; /* Entrance Exam */
+}
+
+.selected-candidates-table th:nth-child(6),
+.selected-candidates-table td:nth-child(6) {
+    width: 8%; /* Interview */
+}
+
+.selected-candidates-table th:nth-child(7),
+.selected-candidates-table td:nth-child(7) {
+    width: 8%; /* Total Marks */
+}
+
+.selected-candidates-table th:nth-child(8),
+.selected-candidates-table td:nth-child(8) {
+    width: 12%; /* Remarks */
+}
+
+.selected-candidates-table th:nth-child(9),
+.selected-candidates-table td:nth-child(9) {
+    width: 16%; /* Supervisor */
+    text-align: left;
+}
+
+.table-note {
+    font-size: 0.9rem;
+    margin-top: 0.5rem;
+    font-style: italic;
+    color: #4b5563;
+}
+
+/* Signature Section */
+.signature-section {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 4rem;
+    margin-bottom: 2rem;
+}
+
+.signature-left,
+.signature-right {
+    font-family: "Times New Roman", Times, serif;
+    font-size: 1rem;
+}
+
+/* Regular table styles - More compact and professional */
+.category-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 1.5rem;
+    font-family: "Times New Roman", Times, serif;
+    table-layout: auto; /* Changed from default to auto */
+}
+
+.category-table td {
+    border: 1px solid #374151;
+    padding: 6px 10px; /* Reduced padding */
+    text-align: left;
+    line-height: 1.3;
+    white-space: nowrap; /* Prevent unnecessary wrapping */
+}
+
+.category-table td:first-child {
+    width: 50px; /* Reduced width for S.No column */
+    text-align: center;
+    font-weight: bold;
+}
+
+.category-table td:nth-child(2) {
+    width: auto; /* Let program name take natural width */
+    min-width: 200px;
+}
+
+.category-table td:last-child {
+    width: 80px; /* Fixed width for count column */
+    text-align: center;
+}
+
+/* Print specific styles for selected candidates table */
+@media print {
+    .selected-candidates-table {
+        font-size: 0.75rem !important;
+        margin: 1.5rem 0 !important;
+    }
+    
+    .selected-candidates-table th,
+    .selected-candidates-table td {
+        border: 1px solid #000 !important;
+        padding: 6px 4px !important;
+        text-align: center !important;
+        vertical-align: middle !important;
+        word-wrap: break-word !important;
+        line-height: 1.1 !important;
+    }
+    
+    .selected-candidates-table th {
+        font-weight: bold !important;
+        font-size: 0.7rem !important;
+        padding: 8px 4px !important;
+    }
+    
+    /* Remove any underlines from editable fields in print */
+    .selected-candidates-table span {
+        border-bottom: none !important;
+        text-decoration: none !important;
+        border: none !important;
+    }
+}
+/* Fix editable field positioning in PDF generation */
+.pdf-generating .cursor-pointer {
+    cursor: default !important;
+    background: transparent !important;
+    border: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    min-height: auto !important;
+    min-width: auto !important;
+    display: inline !important;
+    font-size: inherit !important;
+    line-height: inherit !important;
+    vertical-align: baseline !important;
+    position: static !important;
+    float: none !important;
+    transform: none !important;
+}
+
+.pdf-generating .cursor-pointer:hover {
+    background-color: transparent !important;
+}
+
+/* Fix inline-flex positioning issues */
+.pdf-generating .inline-flex {
+    display: inline !important;
+    vertical-align: baseline !important;
+    position: static !important;
+}
+
+/* Ensure clean appearance during PDF generation */
+.pdf-generating span {
+    border-bottom: none !important;
+    text-decoration: none !important;
+    font-size: inherit !important;
+    display: inline !important;
+    position: static !important;
+    vertical-align: baseline !important;
+    line-height: inherit !important;
+    transform: none !important;
+    float: none !important;
+}
+
+.pdf-generating .border-dotted {
+    border: none !important;
+}
+
+/* Ensure proper text flow and positioning */
+.pdf-generating p {
+    word-wrap: break-word !important;
+    overflow-wrap: break-word !important;
+    width: 100% !important;
+    display: block !important;
+    position: static !important;
+    line-height: inherit !important;
+}
+
+/* Fix any floating or positioning issues */
+.pdf-generating * {
+    position: static !important;
+    float: none !important;
+    transform: none !important;
+}
+
+/* Ensure editable content flows naturally in text */
+.pdf-generating .group {
+    display: inline !important;
+}
+
+.pdf-generating .group span {
+    display: inline !important;
+    vertical-align: baseline !important;
+}
+
+/* Hide edit icons completely */
+.pdf-generating .lucide {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    width: 0 !important;
+    height: 0 !important;
+}
+
+.pdf-generating svg {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    width: 0 !important;
+    height: 0 !important;
+}
+
+/* Remove any gaps from hidden elements */
+.pdf-generating .opacity-0 {
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
+}
+
+.pdf-generating .group-hover\:opacity-100 {
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
+}
+/* PRESERVE EXACT SCREEN APPEARANCE - Only remove edit icons */
+.pdf-generating .minutes-container {
+    padding: 2rem !important; /* Exact same as screen */
+    width: 1024px !important;
+    max-width: 1024px !important;
+    min-width: 1024px !important;
+    margin: 0 auto !important;
+    box-sizing: border-box !important;
+    background: white !important;
+}
+
+/* Keep exact screen spacing between sections */
+.pdf-generating .space-y-6 > * + * {
+    margin-top: 1.5rem !important; /* Exact same as screen */
+}
+
+.pdf-generating .mt-8 {
+    margin-top: 2rem !important; /* Exact same as screen */
+}
+
+.pdf-generating .mt-12 {
+    margin-top: 3rem !important; /* Exact same as screen */
+}
+
+/* Keep exact screen header layout and spacing */
+.pdf-generating .flex.items-center.justify-center {
+    margin-bottom: 2rem !important; /* Exact same as screen */
+    gap: 2rem !important; /* Exact same as screen */
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+/* Keep exact screen paragraph spacing and appearance */
+.pdf-generating p {
+    margin: 0.75rem 0 !important; /* Exact same as screen */
+    line-height: 1.7 !important; /* Exact same as screen */
+    font-size: 0.875rem !important; /* Same as screen base size */
+    color: black !important;
+    text-align: justify !important;
+}
+
+/* Keep exact screen header styling */
+.pdf-generating h1 {
+    font-size: 1.25rem !important; /* Same as screen */
+    margin: 0.25rem 0 !important; /* Exact same as screen */
+    color: #2563eb !important; /* Same blue color */
+    font-weight: bold !important;
+}
+
+.pdf-generating h2 {
+    font-size: 1.125rem !important; /* Same as screen */
+    margin: 0.25rem 0 !important; /* Exact same as screen */
+    color: #dc2626 !important; /* Same red color */
+    font-weight: bold !important;
+}
+
+.pdf-generating h3 {
+    font-size: 1.125rem !important; /* Same as screen */
+    margin: 1.5rem 0 0.75rem 0 !important; /* Exact same as screen */
+    font-weight: bold !important;
+    color: black !important;
+}
+
+/* Keep exact screen table appearance */
+.pdf-generating table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+    table-layout: auto !important;
+    font-size: 0.875rem !important; /* Same as screen */
+    page-break-inside: avoid !important;
+    margin: 1.5rem 0 !important; /* Exact same as screen */
+    border: 1px solid #000 !important;
+}
+
+.pdf-generating th,
+.pdf-generating td {
+    border: 1px solid #000 !important;
+    padding: 8px 12px !important; /* Exact same as screen */
+    font-size: inherit !important;
+    vertical-align: middle !important;
+    text-align: left !important;
+    line-height: 1.5 !important; /* Same as screen */
+    word-wrap: break-word !important;
+    overflow-wrap: break-word !important;
+}
+
+.pdf-generating th {
+    font-weight: bold !important;
+    text-align: center !important;
+    background-color: transparent !important;
+    padding: 8px 12px !important; /* Exact same as screen */
+}
+
+/* Keep exact screen selected candidates table layout */
+.pdf-generating .selected-candidates-table {
+    font-size: 0.75rem !important; /* Same as screen */
+    page-break-inside: avoid !important;
+    margin: 1.5rem 0 !important; /* Exact same as screen */
+    border: 1px solid #000 !important;
+    width: 100% !important;
+    table-layout: fixed !important;
+}
+
+.pdf-generating .selected-candidates-table th,
+.pdf-generating .selected-candidates-table td {
+    font-size: 0.7rem !important; /* Same as screen */
+    padding: 6px 4px !important; /* Exact same as screen */
+    vertical-align: middle !important;
+    border: 1px solid #000 !important;
+    line-height: 1.1 !important; /* Same as screen */
+    text-align: center !important;
+    word-wrap: break-word !important;
+}
+
+.pdf-generating .selected-candidates-table th {
+    font-weight: bold !important;
+    text-align: center !important;
+    padding: 8px 4px !important; /* Exact same as screen */
+}
+
+/* Keep exact screen spacing for all margin classes */
+.pdf-generating .mb-4 {
+    margin-bottom: 1rem !important; /* Same as screen */
+}
+
+.pdf-generating .mb-6 {
+    margin-bottom: 1.5rem !important; /* Same as screen */
+}
+
+.pdf-generating .mb-8 {
+    margin-bottom: 2rem !important; /* Same as screen */
+}
+
+.pdf-generating .space-y-4 > * + * {
+    margin-top: 1rem !important; /* Same as screen */
+}
+
+/* Keep exact screen text alignment */
+.pdf-generating .text-center {
+    text-align: center !important;
+}
+
+.pdf-generating .text-left {
+    text-align: left !important;
+}
+
+.pdf-generating .text-right {
+    text-align: right !important;
+}
+
+/* Keep exact screen font weights */
+.pdf-generating .font-bold {
+    font-weight: bold !important;
+}
+
+/* Keep exact screen signature section */
+.pdf-generating .flex.justify-between.items-end {
+    margin-top: 5cm !important; /* Exact same as screen */
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: flex-end !important;
+}
+
+/* Keep exact screen logo and image sizing */
+.pdf-generating img {
+    max-width: 128px !important; /* Same as screen */
+    max-height: 128px !important; /* Same as screen */
+    flex-shrink: 0 !important;
+}
+
+/* Keep exact screen border styling */
+.pdf-generating .border-b {
+    border-bottom: 1px solid black !important;
+}
+
+/* Preserve all screen flexbox layouts */
+.pdf-generating .flex {
+    display: flex !important;
+}
+
+.pdf-generating .justify-between {
+    justify-content: space-between !important;
+}
+
+.pdf-generating .justify-center {
+    justify-content: center !important;
+}
+
+.pdf-generating .items-center {
+    align-items: center !important;
+}
+
+.pdf-generating .items-end {
+    align-items: flex-end !important;
+}
+
+/* Keep exact screen width classes */
+.pdf-generating .w-64 {
+    width: 16rem !important;
+}
+
+.pdf-generating .w-32 {
+    width: 8rem !important;
+}
+
+.pdf-generating .ml-auto {
+    margin-left: auto !important;
+}
+
+/* Ensure no layout shifts - preserve exact positioning */
+.pdf-generating * {
+    box-sizing: border-box !important;
+}
+
+/* Keep overflow settings same as screen */
+.pdf-generating .overflow-x-auto {
+    overflow: visible !important;
+}
+
+/* PRESERVE EXACT SCREEN APPEARANCE IN PDF - No size changes */
+.pdf-generating {
+    background: white !important;
+    /* Keep exact same width as screen */
+    width: 100% !important;
+    max-width: 1024px !important; /* Same as screen container */
+    margin: 0 auto !important;
+    padding: 2rem !important; /* Same as screen padding */
+    box-sizing: border-box !important;
+    font-family: inherit !important; /* Keep same font as screen */
+    font-size: inherit !important; /* Keep same font size as screen */
+    line-height: inherit !important; /* Keep same line height as screen */
+    color: black !important;
+}
+
+/* Hide all edit elements during PDF generation */
+.pdf-generating .print-hidden,
+.pdf-generating .lucide,
+.pdf-generating .lucide-edit-3,
+.pdf-generating button {
+    display: none !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+    width: 0 !important;
+    height: 0 !important;
+}
+
+/* Container sizing for PDF - Keep exact same as screen */
+.pdf-generating .minutes-container {
+    width: 100% !important;
+    max-width: 1024px !important; /* Same as screen */
+    margin: 0 auto !important;
+    padding: 2rem !important; /* Same as screen */
+    box-shadow: none !important;
+    background: white !important;
+    box-sizing: border-box !important;
+}
+
+/* Header layout for PDF - Keep exact same as screen */
+.pdf-generating .print-header-layout {
+    position: relative !important;
+    display: flex !important;
+    align-items: flex-start !important;
+    justify-content: center !important;
+    margin-bottom: 2rem !important; /* Same as screen */
+    width: 100% !important;
+    padding: 0 !important;
+    min-height: 96px !important; /* Same as screen */
+}
+
+.pdf-generating .print-logo {
+    position: absolute !important;
+    left: 0 !important;
+    top: 0 !important;
+    width: 96px !important; /* Same as screen */
+    height: 96px !important; /* Same as screen */
+    flex-shrink: 0 !important;
+}
+
+.pdf-generating .print-header-text {
+    width: 100% !important;
+    text-align: center !important;
+    padding-top: 8px !important; /* Same as screen */
+    margin: 0 auto !important;
+}
+
+/* Logo sizing for PDF - Keep exact same as screen */
+.pdf-generating img {
+    max-width: 96px !important; /* Same as screen */
+    max-height: 96px !important; /* Same as screen */
+    width: 96px !important;
+    height: 96px !important;
+    object-fit: contain !important;
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+/* Header text styling for PDF - Keep exact same as screen */
+.pdf-generating h1 {
+    color: #2563eb !important; /* Same blue as screen */
+    font-size: 1.25rem !important; /* Same as screen (text-xl) */
+    font-weight: bold !important;
+    margin: 0.25rem 0 !important; /* Same as screen (mb-1) */
+    text-align: center !important;
+    line-height: inherit !important;
+}
+
+.pdf-generating h2 {
+    color: #dc2626 !important; /* Same red as screen */
+    font-size: 1.125rem !important; /* Same as screen (text-lg) */
+    font-weight: bold !important;
+    margin: 0.25rem 0 !important; /* Same as screen (mb-1) */
+    text-align: center !important;
+    line-height: inherit !important;
+}
+
+.pdf-generating h3 {
+    color: black !important;
+    font-size: 1.125rem !important; /* Same as screen (text-lg) */
+    font-weight: bold !important;
+    margin: 0 !important; /* Same as screen */
+    text-align: center !important;
+    line-height: inherit !important;
+}
+
+/* Body text for PDF - Keep exact same as screen */
+.pdf-generating p {
+    font-size: 0.875rem !important; /* Same as screen (text-sm) */
+    line-height: 1.75 !important; /* Same as screen (leading-loose) */
+    margin: 0.75rem 0 !important; /* Same as screen */
+    text-align: justify !important;
+    color: black !important;
+    word-wrap: break-word !important;
+    overflow-wrap: break-word !important;
+}
+
+/* Center aligned paragraphs - Keep exact same as screen */
+.pdf-generating .text-center p {
+    text-align: center !important;
+    font-weight: bold !important;
+}
+
+/* Table styling for PDF - Keep exact same as screen */
+.pdf-generating .flex.justify-center {
+    display: flex !important;
+    justify-content: center !important;
+    width: 100% !important;
+}
+
+.pdf-generating table {
+    border-collapse: collapse !important;
+    margin: 1.5rem auto !important; /* Same as screen */
+    font-size: inherit !important; /* Keep same font size as screen */
+    table-layout: fixed !important;
+}
+
+.pdf-generating th,
+.pdf-generating td {
+    border: 1px solid #000 !important;
+    padding: 0.5rem 0.75rem !important; /* Same as screen (py-2 px-3) */
+    text-align: left !important;
+    vertical-align: middle !important;
+    word-wrap: break-word !important;
+    line-height: inherit !important; /* Keep same line height as screen */
+}
+
+.pdf-generating th {
+    font-weight: bold !important;
+    text-align: center !important;
+    background-color: transparent !important; /* Remove gray background for PDF */
+}
+
+/* Remove gray backgrounds in PDF */
+.pdf-generating .bg-gray-50 {
+    background-color: transparent !important;
+}
+
+/* Selected candidates table for PDF - Keep exact same as screen */
+.pdf-generating .selected-candidates-table {
+    font-size: 0.7rem !important; /* Same as screen */
+    table-layout: fixed !important;
+    border-collapse: collapse !important;
+    margin: 1.5rem auto !important; /* Same as screen */
+    width: 100% !important;
+    max-width: 900px !important; /* Same as screen */
+}
+
+.pdf-generating .selected-candidates-table th,
+.pdf-generating .selected-candidates-table td {
+    font-size: 0.65rem !important; /* Same as screen */
+    padding: 3px 4px !important; /* Same as screen */
+    border: 1px solid #000 !important;
+    text-align: center !important;
+    vertical-align: middle !important;
+    line-height: 1.1 !important; /* Same as screen */
+    word-wrap: break-word !important;
+    overflow-wrap: break-word !important;
+}
+
+/* Keep exact same column widths as screen */
+.pdf-generating .selected-candidates-table th:nth-child(1),
+.pdf-generating .selected-candidates-table td:nth-child(1) {
+    width: 6% !important; /* Same as screen */
+}
+
+.pdf-generating .selected-candidates-table th:nth-child(2),
+.pdf-generating .selected-candidates-table td:nth-child(2) {
+    width: 18% !important; /* Same as screen */
+    text-align: left !important;
+}
+
+.pdf-generating .selected-candidates-table th:nth-child(3),
+.pdf-generating .selected-candidates-table td:nth-child(3) {
+    width: 14% !important; /* Same as screen */
+}
+
+.pdf-generating .selected-candidates-table th:nth-child(4),
+.pdf-generating .selected-candidates-table td:nth-child(4) {
+    width: 10% !important; /* Same as screen */
+}
+
+.pdf-generating .selected-candidates-table th:nth-child(5),
+.pdf-generating .selected-candidates-table td:nth-child(5) {
+    width: 8% !important; /* Same as screen */
+}
+
+.pdf-generating .selected-candidates-table th:nth-child(6),
+.pdf-generating .selected-candidates-table td:nth-child(6) {
+    width: 8% !important; /* Same as screen */
+}
+
+.pdf-generating .selected-candidates-table th:nth-child(7),
+.pdf-generating .selected-candidates-table td:nth-child(7) {
+    width: 8% !important; /* Same as screen */
+}
+
+.pdf-generating .selected-candidates-table th:nth-child(8),
+.pdf-generating .selected-candidates-table td:nth-child(8) {
+    width: 12% !important; /* Same as screen */
+}
+
+.pdf-generating .selected-candidates-table th:nth-child(9),
+.pdf-generating .selected-candidates-table td:nth-child(9) {
+    width: 16% !important; /* Same as screen */
+    text-align: left !important;
+}
+
+/* Section spacing for PDF - Keep exact same as screen */
+.pdf-generating .space-y-6 > * + * {
+    margin-top: 1.5rem !important; /* Same as screen */
+}
+
+.pdf-generating .mt-8 {
+    margin-top: 2rem !important; /* Same as screen */
+}
+
+.pdf-generating .mt-12 {
+    margin-top: 3rem !important; /* Same as screen */
+}
+
+/* Signature section for PDF - Keep exact same as screen */
+.pdf-generating .flex.justify-between.items-end {
+    margin-top: 5cm !important; /* Same as screen */
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: flex-end !important;
+}
+
+/* Remove all interactive elements */
+.pdf-generating .cursor-pointer {
+    cursor: default !important;
+    background-color: transparent !important;
+}
+
+.pdf-generating .border-dotted {
+    border: none !important;
+}
+
+.pdf-generating span:hover {
+    background-color: transparent !important;
+}
+
+/* Clean text rendering */
+.pdf-generating .inline-flex {
+    display: inline !important;
+}
+
+.pdf-generating * {
+    position: static !important;
+    float: none !important;
+    transform: none !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+}
+
+/* Fix editable field positioning issues ONLY for PDF generation and print */
+@media print {
+    .cursor-pointer {
+        position: static !important;
+        display: inline !important;
+        vertical-align: baseline !important;
+        line-height: inherit !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        border: none !important;
+        background: transparent !important;
+        min-height: auto !important;
+        min-width: auto !important;
+        transform: none !important;
+        z-index: auto !important;
+        box-shadow: none !important;
+        text-decoration: none !important;
+        border-bottom: none !important;
+    }
+
+    .inline-flex {
+        display: inline !important;
+        position: static !important;
+        vertical-align: baseline !important;
+    }
+
+    .group {
+        display: inline !important;
+        position: static !important;
+    }
+
+    /* Ensure all spans flow naturally in text */
+    span:not(.lucide):not(.lucide-edit-3) {
+        position: static !important;
+        display: inline !important;
+        vertical-align: baseline !important;
+        line-height: inherit !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        border: none !important;
+        background: transparent !important;
+        transform: none !important;
+        z-index: auto !important;
+    }
+
+    /* Fix any floating or positioned elements */
+    * {
+        position: static !important;
+        float: none !important;
+        transform: none !important;
+    }
+
+    /* Exception for absolutely positioned logo */
+    .print-logo {
+        position: absolute !important;
+    }
+
+    /* Exception for relative positioned header container */
+    .print-header-layout {
+        position: relative !important;
+    }
+}
