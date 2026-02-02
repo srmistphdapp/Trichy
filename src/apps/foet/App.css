@@ -1201,7 +1201,6 @@ input[type="file"]::-webkit-file-upload-button:hover {
   transform: translateY(-1px);
 }
 
-/
 /* Ensure proper scrolling globally */
 html,
 body {
