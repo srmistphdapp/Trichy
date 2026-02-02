@@ -51,7 +51,7 @@ async function updateAllPasswordsTrichy() {
   console.log('🔄 Starting password updates for PhD Trichy system...')
   
   // Update specific users
-  await updateUserPassword('director@gmail.com', '1234')
+  await updateUserPassword('director@srmtrp.edu.in', '1234')
   await updateUserPassword('researchco@gmail.com', '1234')
   
   // Update faculty-specific emails if they exist

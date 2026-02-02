@@ -64,10 +64,10 @@ const DirectorPortal = () => {
         const user = await supabaseAuth.getCurrentUser();
         console.log('Current director user:', user);
         
-        if (user?.email === 'director@gmail.com') {
+        if (user?.email === 'director@srmtrp.edu.in') {
           setDirectorInfo({
             name: 'Director',
-            email: 'director@gmail.com',
+            email: 'director@srmtrp.edu.in',
             role: 'Director',
             campus: 'Trichy'
           });
