@@ -8,7 +8,7 @@ import ForgotPasswordModal from './ForgotPasswordModal.js';
 
 const roleConfig = {
   director: {
-    email: "director@gmail.com",
+    email: "director@srmtrp.edu.in",
     redirect: "/director",
     title: "Director"
   },

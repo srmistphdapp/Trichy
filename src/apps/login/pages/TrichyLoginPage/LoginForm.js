@@ -6,7 +6,7 @@ import { fetchAdminByEmail } from '../../../../services/adminService';
 import ForgotPasswordModal from './ForgotPasswordModal.js';
 
 const roleConfig = {
-  director: { email: "director@gmail.com", redirect: "/director", title: "Director" },
+  director: { email: "director@srmtrp.edu.in", redirect: "/director", title: "Director" },
   admin: { email: null, redirect: "/admin", title: "Admin" }, // Will check against admins table
   coordinator: { email: "researchco@gmail.com", redirect: "/foet", title: "Coordinator" },
   department: { email: null, redirect: "/department", title: "Department" } // Will check against department_users table
