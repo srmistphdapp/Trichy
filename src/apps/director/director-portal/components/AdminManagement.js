@@ -147,7 +147,7 @@ const AdminManagement = ({ onModalStateChange }) => {
         password: '1234', // Default password
         phone: formData.phone,
         role: 'Admin',
-        campus: 'Ramapuram',
+        campus: 'Trichy',
         created_by: 'Director'
       });
 
@@ -273,7 +273,7 @@ const AdminManagement = ({ onModalStateChange }) => {
                   <td className="text-left p-4 text-sm text-gray-600 whitespace-nowrap" style={{ width: '200px', minWidth: '200px' }}>{admin.email}</td>
                   <td className="text-left p-4 text-sm text-gray-600 whitespace-nowrap" style={{ width: '130px', minWidth: '130px' }}>{admin.phone || '-'}</td>
                   <td className="text-left p-4 text-sm text-gray-600 whitespace-nowrap" style={{ width: '100px', minWidth: '100px' }}>{admin.role || 'Admin'}</td>
-                  <td className="text-left p-4 text-sm text-gray-600 whitespace-nowrap" style={{ width: '120px', minWidth: '120px' }}>{admin.campus || 'Ramapuram'}</td>
+                  <td className="text-left p-4 text-sm text-gray-600 whitespace-nowrap" style={{ width: '120px', minWidth: '120px' }}>{admin.campus || 'Trichy'}</td>
                   <td className="text-left p-4">
                     <div className="flex justify-start gap-2">
                       <button
@@ -399,7 +399,7 @@ const AdminManagement = ({ onModalStateChange }) => {
                     </label>
                     <input
                       type="text"
-                      value="Ramapuram"
+                      value="Trichy"
                       readOnly
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-100 cursor-not-allowed"
                     />
@@ -466,7 +466,7 @@ const AdminManagement = ({ onModalStateChange }) => {
                 </div>
                 <div className="flex border-b pb-2">
                   <span className="font-medium text-gray-700 w-32">Campus:</span>
-                  <span className="text-gray-900">{viewingAdmin.campus || 'Ramapuram'}</span>
+                  <span className="text-gray-900">{viewingAdmin.campus || 'Trichy'}</span>
                 </div>
                 <div className="flex border-b pb-2">
                   <span className="font-medium text-gray-700 w-32">Created By:</span>

@@ -446,7 +446,7 @@ export default function MinutesOfMeeting() {
             screeningEndTime: '',
             faculty: 'FACULTY OF SCIENCE & HUMANITIES',
             department: 'DEPARTMENT OF MATHEMATICS',
-            institution: 'SRMIST, Ramapuram',
+            institution: 'SRMIST, Trichy',
             totalCandidates: '',
             attendedCandidates: '',
             entranceMarks: '',
@@ -454,7 +454,7 @@ export default function MinutesOfMeeting() {
             passingMarks: '',
             relaxationPercentage: '',
             startDate: '',
-            dean: 'Dean (S&H), Ramapuram Campus',
+            dean: 'Dean (S&H), Trichy Campus',
             
             // Tables data
             candidatesTable: [
@@ -483,7 +483,7 @@ export default function MinutesOfMeeting() {
             programme2: 'programme',
             department2: 'DEPARTMENT OF MATHEMATICS',
             faculty2: 'S&H',
-            institution2: 'SRMIST-Ramapuram',
+            institution2: 'SRMIST-Trichy',
             
             // Page 3 data
             selectedCandidatesTable: [
@@ -1421,7 +1421,7 @@ export default function MinutesOfMeeting() {
                     </p>
 
                     <p>
-                        The written examination and interview for admitting candidates to the Ph.D. programme({formData.meetingMonth}) at the {formData.department}, SRMIST, Ramapuram were conducted on <EditableField field="examDate" value={formData.examDate} type="examDate" />. The written examination was held from <EditableField field="examStartTime" value={formData.examStartTime} /> to <EditableField field="examEndTime" value={formData.examEndTime} />. Following this, the screening and selection committee for PhD program at the {getDepartmentTitleCase(formData.department)} convened from <EditableField field="screeningStartTime" value={formData.screeningStartTime} /> to <EditableField field="screeningEndTime" value={formData.screeningEndTime} /> to evaluate and select the applicants for Full time and Part time PhD program in the {getDepartmentTitleCase(formData.department)}, SRMIST, Ramapuram. A total of <EditableField field="totalCandidates" value={formData.totalCandidates} /> candidates appeared for the entrance test, and <EditableField field="attendedCandidates" value={formData.attendedCandidates} /> candidates attended the interview. The Rank list for the candidates has been prepared based on marks obtained by the candidates in Entrance exam (<EditableField field="entranceMarks" value={formData.entranceMarks} /> marks) and Presentation & Interview (<EditableField field="interviewMarks" value={formData.interviewMarks} /> marks) amounting to a total of 100 marks. Candidates who have scored <EditableField field="passingMarks" value={formData.passingMarks} /> marks and above have been selected. A <EditableField field="relaxationPercentage" value={formData.relaxationPercentage} /> relaxation has been given to candidates belonging to SC/ST OBC, Differently Abled, and Economically Weaker Sections for pursuing a Ph.D. in the {getDepartmentTitleCase(formData.department)}, SRMIST, Ramapuram, from {formData.meetingMonth}. The same has been approved by the Dean (S&H), Ramapuram Campus.
+                        The written examination and interview for admitting candidates to the Ph.D. programme({formData.meetingMonth}) at the {formData.department}, SRMIST, Trichy were conducted on <EditableField field="examDate" value={formData.examDate} type="examDate" />. The written examination was held from <EditableField field="examStartTime" value={formData.examStartTime} /> to <EditableField field="examEndTime" value={formData.examEndTime} />. Following this, the screening and selection committee for PhD program at the {getDepartmentTitleCase(formData.department)} convened from <EditableField field="screeningStartTime" value={formData.screeningStartTime} /> to <EditableField field="screeningEndTime" value={formData.screeningEndTime} /> to evaluate and select the applicants for Full time and Part time PhD program in the {getDepartmentTitleCase(formData.department)}, SRMIST, Trichy. A total of <EditableField field="totalCandidates" value={formData.totalCandidates} /> candidates appeared for the entrance test, and <EditableField field="attendedCandidates" value={formData.attendedCandidates} /> candidates attended the interview. The Rank list for the candidates has been prepared based on marks obtained by the candidates in Entrance exam (<EditableField field="entranceMarks" value={formData.entranceMarks} /> marks) and Presentation & Interview (<EditableField field="interviewMarks" value={formData.interviewMarks} /> marks) amounting to a total of 100 marks. Candidates who have scored <EditableField field="passingMarks" value={formData.passingMarks} /> marks and above have been selected. A <EditableField field="relaxationPercentage" value={formData.relaxationPercentage} /> relaxation has been given to candidates belonging to SC/ST OBC, Differently Abled, and Economically Weaker Sections for pursuing a Ph.D. in the {getDepartmentTitleCase(formData.department)}, SRMIST, Trichy, from {formData.meetingMonth}. The same has been approved by the Dean (S&H), Trichy Campus.
                     </p>
                     {/* Details of Candidates Table */}
                     <div className="mt-8">
@@ -1634,7 +1634,7 @@ export default function MinutesOfMeeting() {
                             
                             <p>
                                 <strong>Conclusion:</strong> Based on the written examination and interview performance, <EditableField field="selectedCandidates" value={formData.selectedCandidates} /> candidates were selected 
-                                to pursue the Ph.D. programme in the {getDepartmentTitleCase(formData.department2)}, S&H, SRMIST-Ramapuram.
+                                to pursue the Ph.D. programme in the {getDepartmentTitleCase(formData.department2)}, S&H, SRMIST-Trichy.
                             </p>
                             
                             <p>
