@@ -41,12 +41,11 @@ function calcAverage(marks, numEvaluators = 1) {
 
 // Helper function to determine faculty interview status based on department
 function getFacultyInterviewStatus(userDepartment, userFaculty) {
-    // Dynamically derive department codes based on centralized mappings
     // Medical department codes that should forward to Medical faculty
-    const medicalDepartments = ['BMS', 'CDE', 'OMPM', 'OMS', 'OMR', 'ORTHO', 'PPD', 'POI', 'PROSTH', 'PHD', 'BIOCHEM_MED', 'MICRO_MED', 'OT', 'MIT', 'CP', 'RDT', 'AT'];
+    const medicalDepartments = ['BMS', 'CDE', 'OMPM', 'OMS', 'OMR', 'ORTHO', 'PPD', 'POI', 'PROSTH', 'PHD'];
     const engineeringDepartments = ['BME', 'ENGBIO', 'ENGCHEM', 'CIVIL', 'CSE', 'EEE', 'ECE', 'ENGENG', 'ENGMATH', 'MECH', 'ENGPHYS'];
-    const scienceDepartments = ['COMM', 'CS_SCI', 'BIO_SCI', 'BIOCHEM_SCI', 'MICRO_SCI', 'MATH_SCI', 'PHYS_SCI', 'CHEM_SCI', 'EFL', 'FASHION', 'TAMIL', 'VISCOM'];
-    const managementDepartments = ['MBA', 'PED'];
+    const scienceDepartments = ['BIO', 'COMM', 'CS', 'EFL', 'FASHION', 'MATH', 'TAMIL', 'VISCOM'];
+    const managementDepartments = ['MBA'];
     
     // Helper function to get department short code
     const getDepartmentShortCode = (departmentName) => {
@@ -177,14 +176,6 @@ const Interview = () => {
                 setLoading(true);
                 setError(null);
 
-                console.log(`🔍 [Interview Component] Current user info:`, {
-                    name: currentUser?.name,
-                    role: currentUser?.role,
-                    department: currentUser?.department,
-                    faculty: currentUser?.faculty,
-                    email: currentUser?.email
-                });
-
                 const { fetchExaminationRecordsForInterview } = await import('../services/departmentScholarService');
                 const { data, error: fetchError } = await fetchExaminationRecordsForInterview(
                     currentUser.department,
@@ -194,19 +185,7 @@ const Interview = () => {
                 if (fetchError) {
                     console.error('❌ Error loading examination records:', fetchError);
                     console.error('❌ Full error details:', fetchError);
-                    
-                    // Enhanced error message with diagnostic help
-                    const errorMsg = `Failed to load examination records.\n\n
-DIAGNOSTIC INFORMATION:\n
-Your Department: ${currentUser.department || 'NOT SET'}\n
-Your Faculty: ${currentUser.faculty || 'Not Set - defaulting to Engineering & Technology'}\n\n
-CHECK CONSOLE (F12) FOR DETAILED DIAGNOSIS:\n
-Look for "===== DATABASE DIAGNOSTIC =====" in the console.\n
-This shows what institutions/departments exist in your database.\n
-Compare them with your logged-in user info above.\n\n
-If still no match after reviewing diagnostics, contact your administrator.`;
-                    
-                    setError(errorMsg);
+                    setError(`Failed to load examination records: ${fetchError.message || fetchError}`);
                 } else {
                     console.log(`📊 Raw examination records data:`, data);
                     console.log(`📊 Number of records found:`, data?.length || 0);
@@ -253,15 +232,6 @@ If still no match after reviewing diagnostics, contact your administrator.`;
                     }));
 
                     setExaminationRecords(transformedRecords);
-                    
-                    // If no records found, provide diagnostic info
-                    if (!data || data.length === 0) {
-                        console.warn(`⚠️ IMPORTANT: No examination records matched your department filter!`);
-                        console.warn(`📋 Your department: ${currentUser.department}`);
-                        console.warn(`📋 Your faculty: ${currentUser.faculty}`);
-                        console.warn(`📋 Check browser console for detailed database diagnostic information.`);
-                        setError(`No examination records found for your department.\n\nThis usually means:\n1. No scholars have been created yet, OR\n2. Your department/faculty doesn't match the scholar data\n\nCheck console (F12) for detailed diagnostic info showing what departments/faculties exist in the database.`);
-                    }
                     
                     // If there are existing panel assignments, reconstruct panels from database
                     const existingPanels = new Map();
@@ -824,22 +794,15 @@ If still no match after reviewing diagnostics, contact your administrator.`;
         return () => clearTimeout(timer);
     }, [redistributeScholarsAutomatically]);
 
-    // Additional trigger when panels length changes - with safeguards against race conditions
+    // Additional trigger when panels length changes
     useEffect(() => {
         if (panels.length > 0 && examinationRecords.length > 0) {
-            console.log(`🔄 Panel count changed (now ${panels.length}), triggering smart redistribution`);
-            console.log(`📊 Available examination records: ${examinationRecords.length}`);
-            
+            console.log('🔄 Panels or records changed, triggering redistribution');
             const timer = setTimeout(() => {
-                console.log('🔄 Executing automatic redistribution...');
                 redistributeScholarsAutomatically();
-            }, 150); // Reduced delay from 200ms
+            }, 200);
             
             return () => clearTimeout(timer);
-        } else {
-            if (panels.length > 0 && examinationRecords.length === 0) {
-                console.warn('⚠️ Panels exist but examination records are empty - redistribution skipped');
-            }
         }
     }, [panels.length, examinationRecords.length, redistributeScholarsAutomatically]);
 
@@ -916,32 +879,10 @@ If still no match after reviewing diagnostics, contact your administrator.`;
         }
 
         try {
-            // CHECK: Verify that examination records are available
-            if (!examinationRecords || examinationRecords.length === 0) {
-                console.error('❌ CRITICAL: No examination records available!');
-                console.error('📊 examinationRecords state:', {
-                    isNull: examinationRecords === null,
-                    isUndefined: examinationRecords === undefined,
-                    isEmpty: examinationRecords?.length === 0,
-                    length: examinationRecords?.length
-                });
-                console.error('💡 Possible causes:');
-                console.error('   1. Scholars haven\'t been created in examination records');
-                console.error('   2. Department or Faculty filter might be excluding all scholars');
-                console.error('   3. Data fetch from database failed');
-                setMessageBox({ open: true, message: 'No scholar records found. Please ensure:\n1. Scholars exist in the examination records\n2. Department and Faculty match the application data\n3. Check browser console for detailed error logs' });
-                return;
-            }
-
             const nextId = (panels.length > 0 ? Math.max(...panels.map(p => p.id)) : 0) + 1;
             
-            console.log(`✅ Panel creation starting - Available examination records: ${examinationRecords.length}`);
-            console.log(`📊 Sample records:`, examinationRecords.slice(0, 2).map(r => ({
-                id: r.id,
-                name: r.name,
-                hasPanel: !!r.assignedPanel,
-                panel: r.assignedPanel
-            })));
+            console.log(`🔍 Creating Panel ${nextId} - Current examination records:`, examinationRecords.length);
+            console.log(`🔍 Current panel scholars:`, panelScholars);
             
             // Create new panel object first
             const newPanel = { id: nextId, evaluators: [...newPanelEvaluators] };
@@ -1156,8 +1097,7 @@ If still no match after reviewing diagnostics, contact your administrator.`;
                 console.log(`⚠️ No redistributable scholars found. Panel ${nextId} created empty.`);
             }
 
-            // Update panel scholars state - CRITICAL: This must be done before setting activePanel
-            console.log(`✅ Setting panelScholars with ${Object.values(newPanelScholars).flat().length} total scholars distributed`);
+            // Update panel scholars state
             setPanelScholars(newPanelScholars);
             
             // Log final distribution
@@ -1166,13 +1106,12 @@ If still no match after reviewing diagnostics, contact your administrator.`;
                 console.log(`   Panel ${panelId}: ${scholars.length} scholars (${scholars.map(s => s.name).join(', ')})`);
             });
             
-            // Set active panel - this will trigger re-render with the new scholars
-            console.log(`✅ Setting active panel to ${nextId}`);
+            // Set active panel
             setActivePanel(nextId);
 
             // Close modal and show success message
             setAddPanelModalOpen(false);
-            setMessageBox({ open: true, message: `Panel ${nextId} created successfully with ${Object.values(newPanelScholars).flat().length} scholars assigned!` });
+            setMessageBox({ open: true, message: `Panel ${nextId} created successfully with evaluator details saved to database!` });
 
         } catch (err) {
             console.error('❌ Exception creating panel:', err);
@@ -1377,16 +1316,76 @@ If still no match after reviewing diagnostics, contact your administrator.`;
 
             console.log(`🔄 Auto-saving interview marks to examiner columns:`, updates);
 
-            // Save to examination_records table
+            // Save to examination_records table with retry logic
             const { updateExaminationRecord } = await import('../services/departmentScholarService');
-            const { data, error } = await updateExaminationRecord(databaseId, updates);
+            
+            let saveAttempts = 0;
+            const maxAttempts = 3;
+            let saveResult = null;
+            
+            while (saveAttempts < maxAttempts) {
+                saveAttempts++;
+                console.log(`🔄 Save attempt ${saveAttempts}/${maxAttempts} for scholar ${databaseId}`);
+                
+                try {
+                    saveResult = await updateExaminationRecord(databaseId, updates);
+                    
+                    if (saveResult.error) {
+                        console.error(`❌ Save attempt ${saveAttempts} failed:`, saveResult.error);
+                        
+                        // If it's a network error, retry
+                        if (saveResult.error.message?.includes('fetch') || 
+                            saveResult.error.message?.includes('network') ||
+                            saveResult.error.message?.includes('Failed to fetch')) {
+                            
+                            if (saveAttempts < maxAttempts) {
+                                console.log(`🔄 Network error detected, retrying in ${saveAttempts}s...`);
+                                await new Promise(resolve => setTimeout(resolve, saveAttempts * 1000));
+                                continue;
+                            }
+                        }
+                        
+                        // If it's not a network error or we've exhausted retries, break
+                        break;
+                    } else {
+                        // Success!
+                        console.log(`✅ Save successful on attempt ${saveAttempts}`);
+                        break;
+                    }
+                } catch (err) {
+                    console.error(`❌ Exception on save attempt ${saveAttempts}:`, err);
+                    saveResult = { data: null, error: err };
+                    
+                    // If it's a network error, retry
+                    if (err.message?.includes('fetch') || 
+                        err.message?.includes('network') ||
+                        err.message?.includes('Failed to fetch')) {
+                        
+                        if (saveAttempts < maxAttempts) {
+                            console.log(`🔄 Network exception detected, retrying in ${saveAttempts}s...`);
+                            await new Promise(resolve => setTimeout(resolve, saveAttempts * 1000));
+                            continue;
+                        }
+                    }
+                    
+                    break;
+                }
+            }
 
-            if (error) {
-                console.error('❌ Error saving marks to examination_records:', error);
-                console.error('❌ Full error details:', error);
+            if (saveResult.error) {
+                console.error('❌ Error saving marks to examination_records after all attempts:', saveResult.error);
+                console.error('❌ Full error details:', saveResult.error);
                 console.error('❌ Database ID that failed:', databaseId);
                 console.error('❌ Updates that failed:', updates);
-                setMessageBox({ open: true, message: `Failed to auto-save marks: ${error.message || error}` });
+                
+                // Show user-friendly error message
+                const errorMessage = saveResult.error.message?.includes('fetch') || 
+                                   saveResult.error.message?.includes('network') ||
+                                   saveResult.error.message?.includes('Failed to fetch')
+                    ? 'Network connection issue. Please check your internet connection and try again.'
+                    : `Failed to save marks: ${saveResult.error.message || saveResult.error}`;
+                
+                setMessageBox({ open: true, message: errorMessage });
                 return;
             }
 
@@ -1447,14 +1446,11 @@ If still no match after reviewing diagnostics, contact your administrator.`;
         };
     }, [autoSaveTimeout]);
 
-    // Modified: Handles alphanumeric input including "Ab" for A and triggers auto-save with better debouncing
+    // Modified: Handles alphanumeric input including "Ab" for A but does NOT trigger auto-save
     const handleMarkChange = (idx, val) => {
         if (val === '') {
             setEditMarks(m => m.map((x, i) => (i === idx ? '' : x)));
-            // Trigger auto-save after mark change with longer delay for empty values
-            if (editingId) {
-                autoSaveMarks(editingId);
-            }
+            // No auto-save - only save on Enter or blur
             return;
         }
         
@@ -1468,19 +1464,13 @@ If still no match after reviewing diagnostics, contact your administrator.`;
             const lowerVal = val.toLowerCase().trim();
             if (lowerVal === 'a' || lowerVal === 'ab') {
                 setEditMarks(m => m.map((x, i) => (i === idx ? 'Ab' : x)));
-                // Trigger auto-save after mark change
-                if (editingId) {
-                    autoSaveMarks(editingId);
-                }
+                // No auto-save - only save on Enter or blur
                 return;
             }
             
             // For any other text input up to 2 characters
             setEditMarks(m => m.map((x, i) => (i === idx ? val : x)));
-            // Trigger auto-save after mark change
-            if (editingId) {
-                autoSaveMarks(editingId);
-            }
+            // No auto-save - only save on Enter or blur
             return;
         }
         
@@ -1490,10 +1480,7 @@ If still no match after reviewing diagnostics, contact your administrator.`;
             // Allow the input as string first, then validate on save
             if (val.length <= 2) { // Max 2 digits (0-30)
                 setEditMarks(m => m.map((x, i) => (i === idx ? val : x)));
-                // Only trigger auto-save for complete numbers or after a pause
-                if (editingId) {
-                    autoSaveMarks(editingId);
-                }
+                // No auto-save - only save on Enter or blur
             }
             return;
         }
@@ -1501,10 +1488,7 @@ If still no match after reviewing diagnostics, contact your administrator.`;
         // For any other alphanumeric input, allow it (but limit to 2 characters)
         if (val.length <= 2) { // Limit text input to 2 characters max
             setEditMarks(m => m.map((x, i) => (i === idx ? val : x)));
-            // Trigger auto-save after mark change
-            if (editingId) {
-                autoSaveMarks(editingId);
-            }
+            // No auto-save - only save on Enter or blur
         }
     };
 
@@ -2085,18 +2069,6 @@ If still no match after reviewing diagnostics, contact your administrator.`;
 
     const currentPanel = panels.find(p => p.id === activePanel);
 
-    // Debug: Log panelScholars state whenever it changes
-    useEffect(() => {
-        const scholarsInActivePanel = panelScholars[activePanel] || [];
-        if (activePanel) {
-            console.log(`📊 [RENDER CHECK] Active Panel ${activePanel} has ${scholarsInActivePanel.length} scholars`);
-            if (scholarsInActivePanel.length === 0) {
-                console.warn(`⚠️ Active Panel ${activePanel} is EMPTY! This is likely the display issue.`);
-                console.warn(`📊 All panels status:`, Object.entries(panelScholars).map(([pid, scholars]) => `P${pid}:${scholars.length}S`).join(', '));
-            }
-        }
-    }, [panelScholars, activePanel]);
-
     // Show loading state
     if (loading) {
         return (
@@ -2321,20 +2293,27 @@ If still no match after reviewing diagnostics, contact your administrator.`;
                                                                                 }, 50);
                                                                             }
                                                                         }}
-                                                                        onBlur={() => {
-                                                                            // Save when input loses focus (backup for Enter key)
-                                                                            if (editingId) {
-                                                                                console.log('🔄 Input blur - triggering save for scholar:', editingId);
-                                                                                // Clear any pending auto-save timeout
-                                                                                if (autoSaveTimeout) {
-                                                                                    clearTimeout(autoSaveTimeout);
-                                                                                    setAutoSaveTimeout(null);
-                                                                                }
-                                                                                // Trigger immediate save with small delay to ensure input value is captured
-                                                                                setTimeout(() => {
+                                                                        onBlur={(e) => {
+                                                                            // Only save when truly leaving the editing area, not when tabbing between fields
+                                                                            setTimeout(() => {
+                                                                                // Check if the new focused element is still within the same row's input fields
+                                                                                const activeElement = document.activeElement;
+                                                                                const isStillInSameRow = activeElement && 
+                                                                                    activeElement.tagName === 'INPUT' && 
+                                                                                    activeElement.closest('tr') === e.target.closest('tr');
+                                                                                
+                                                                                // Only save if we're not moving to another input in the same row
+                                                                                if (!isStillInSameRow && editingId) {
+                                                                                    console.log('🔄 Input blur - truly leaving row, triggering save for scholar:', editingId);
+                                                                                    // Clear any pending auto-save timeout
+                                                                                    if (autoSaveTimeout) {
+                                                                                        clearTimeout(autoSaveTimeout);
+                                                                                        setAutoSaveTimeout(null);
+                                                                                    }
+                                                                                    // Trigger immediate save
                                                                                     handleSave(editingId);
-                                                                                }, 50);
-                                                                            }
+                                                                                }
+                                                                            }, 10); // Small delay to let focus settle
                                                                         }}
                                                                         onFocus={e => {
                                                                             // Clear the field if it contains 0 when focused
@@ -2349,7 +2328,7 @@ If still no match after reviewing diagnostics, contact your administrator.`;
                                                             ));
                                                         })()
                                                     ) : isInitialEntry ? (
-                                                        // Initial Entry State - clickable inputs that trigger edit mode
+                                                        // Initial Entry State - requires clicking to enter edit mode (no auto-focus edit)
                                                         (() => {
                                                             const currentPanel = panels.find(p => p.id === activePanel);
                                                             const numEvaluators = currentPanel ? currentPanel.evaluators.length : 1;
@@ -2359,7 +2338,7 @@ If still no match after reviewing diagnostics, contact your administrator.`;
                                                                         type="text" 
                                                                         className="w-20 text-center border rounded px-2 py-1 cursor-pointer hover:bg-gray-50" 
                                                                         value={v.marks[i] === 0 ? '' : (v.marks[i] || '')} 
-                                                                        onFocus={() => handleEdit(v)} 
+                                                                        onClick={() => handleEdit(v)} 
                                                                         readOnly
                                                                         placeholder="0"
                                                                     />
@@ -2387,15 +2366,22 @@ If still no match after reviewing diagnostics, contact your administrator.`;
                                                             ));
                                                         })()
                                                     )}
-                                                    <td className="text-blue-700 font-bold text-lg text-center">
+                                                    <td className="font-bold text-lg text-center">
                                                         <span>
                                                             {(() => {
                                                                 const currentPanel = panels.find(p => p.id === activePanel);
                                                                 const numEvaluators = currentPanel ? currentPanel.evaluators.length : 1;
                                                                 const avg = isEditing ? calcAverage(editMarks, numEvaluators) : calcAverage(v.marks, numEvaluators);
-                                                                return avg === 'Ab' ? 
-                                                                    <span className="text-red-600 font-semibold">Ab</span> : 
-                                                                    avg;
+                                                                
+                                                                if (avg === 'Ab') {
+                                                                    return <span className="text-red-600 font-semibold">Ab</span>;
+                                                                }
+                                                                
+                                                                // Color coding: Green for pass (≥15), Red for fail (<15)
+                                                                const isPass = typeof avg === 'number' && avg >= 15;
+                                                                const colorClass = isPass ? 'text-green-600' : 'text-red-600';
+                                                                
+                                                                return <span className={`${colorClass} font-semibold`}>{avg}</span>;
                                                             })()}
                                                         </span>
                                                     </td>
@@ -2492,7 +2478,7 @@ If still no match after reviewing diagnostics, contact your administrator.`;
                         <div className="mb-4 border rounded-lg p-4 bg-gray-50">
                             <div className="text-sm text-gray-600">Admin Name: <span className="font-semibold">Dr. Anand</span></div>
                             <div className="text-sm text-gray-600">Role: <span className="font-semibold">HOD, CSE</span></div>
-                            <div className="text-sm text-gray-600">Email: <a href="mailto:anand.cse@srm.com" className="text-sky-600">anand.cse@srm.com</a></div>
+                            <div className="text-sm text-gray-600">Email: <a href="mailto:anand.cse@srmist.edu.in" className="text-sky-600">anand.cse@srmist.edu.in</a></div>
                         </div>
                         <div className="mb-4">
                             <h4 className="font-bold">Consent & Confirmation</h4>
