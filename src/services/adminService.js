@@ -1,4 +1,4 @@
-import { supabase } from '../supabaseClient';
+import { supabase, supabaseAdmin } from '../supabaseClient';
 
 /**
  * Admin Service
@@ -63,18 +63,17 @@ export const createAdminWithAuth = async (adminData) => {
   try {
     const { name, email, password, phone, role, campus, created_by } = adminData;
 
-    // Step 1: Create authentication user using Supabase Admin API
-    // Note: This requires the service_role key which should be used server-side
-    // For client-side, we'll use the regular signUp and then link the user
-    
-    const { data: authData, error: authError } = await supabase.auth.signUp({
+    // Use admin client if available, otherwise fall back to regular client
+    const clientToUse = supabaseAdmin || supabase;
+
+    // Step 1: Create authentication user
+    const { data: authData, error: authError } = await clientToUse.auth.admin.createUser({
       email: email,
       password: password,
-      options: {
-        data: {
-          name: name,
-          role: 'admin'
-        }
+      email_confirm: true, // Auto-confirm email
+      user_metadata: {
+        name: name,
+        role: 'admin'
       }
     });
 
@@ -93,7 +92,7 @@ export const createAdminWithAuth = async (adminData) => {
           email: email,
           phone: phone || null,
           role: role || 'Admin',
-          campus: campus || 'Ramapuram',
+          campus: campus || 'Trichy',
           created_by: created_by || null,
           status: 'Active'
         }

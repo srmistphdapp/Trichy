@@ -48,6 +48,7 @@ const DirectorPortal = () => {
   const [workflowSubmenuOpen, setWorkflowSubmenuOpen] = useState(false); // NEW: Workflow dropdown state
   const [directorInfo, setDirectorInfo] = useState(null);
   const [loadingDirector, setLoadingDirector] = useState(true);
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [previousSidebarState, setPreviousSidebarState] = useState(false);
 
   // Auto-open Scholar Administration submenu when on those pages
@@ -87,7 +88,7 @@ const DirectorPortal = () => {
     RMP: {
       name: "Trichy",
       adminList: [
-        { id: 'admin1', name: 'Jaikumar', email: 'superadmin@srm.com', role: 'Admin', campus: 'Trichy' },
+        { id: 'admin1', name: 'Jaikumar', email: 'ad1@srmtrp.edu.in', role: 'Admin', campus: 'Trichy' },
       ],
       faculties: [
         {
@@ -110,8 +111,8 @@ const DirectorPortal = () => {
         }
       ],
       coordinatorList: [
-        { id: 'coord1', name: 'Umesh Shankar', email: 'coordinator1@srm.com', assignedFaculty: 'Faculty of Science & Humanities' },
-        { id: 'coord2', name: 'Adithya Raj', email: 'coordinator2@srm.com', assignedFaculty: 'Faculty of Engineering & Technology' }
+        { id: 'coord1', name: 'Umesh Shankar', email: 'coordinator1@srmtrp.edu.in', assignedFaculty: 'Faculty of Science & Humanities' },
+        { id: 'coord2', name: 'Adithya Raj', email: 'coordinator2@srmtrp.edu.in', assignedFaculty: 'Faculty of Engineering & Technology' }
       ],
       scholarList: []
     }
@@ -155,6 +156,25 @@ const DirectorPortal = () => {
       // Restore the sidebar state immediately
       setIsSidebarMinimized(previousSidebarState);
     }
+  };
+
+  // Handle logout confirmation
+  const handleLogout = () => {
+    setShowLogoutModal(true);
+  };
+
+  const confirmLogout = async () => {
+    try {
+      await supabaseAuth.signOut();
+      window.location.href = '/login';
+    } catch (error) {
+      console.error('Logout error:', error);
+      window.location.href = '/login';
+    }
+  };
+
+  const cancelLogout = () => {
+    setShowLogoutModal(false);
   };
 
   const renderTabContent = () => {
@@ -392,7 +412,7 @@ const DirectorPortal = () => {
                   </div>
                   <div className="flex items-start gap-2">
                     <span className="text-gray-600 font-medium min-w-fit">Campus:</span>
-                    <span className="text-gray-700 truncate">Trichy</span>
+                    <span className="text-gray-700 truncate">{directorInfo.campus}</span>
                   </div>
                 </div>
               </div>
@@ -603,15 +623,7 @@ const DirectorPortal = () => {
             {!isFullscreen && (
               <div className="sidebar-logout-section border-t border-white/10 p-3 mt-auto">
                 <button
-                  onClick={async () => {
-                    try {
-                      await supabaseAuth.signOut();
-                      window.location.href = '/login';
-                    } catch (error) {
-                      console.error('Logout error:', error);
-                      window.location.href = '/login';
-                    }
-                  }}
+                  onClick={handleLogout}
                   className="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-3 rounded-lg transition duration-300 ease-in-out transform hover:scale-105 flex items-center justify-center gap-2 shadow-lg text-sm"
                 >
                   <MdLogout className="w-4 h-4" />
@@ -629,6 +641,40 @@ const DirectorPortal = () => {
           </main>
         </div>
       </div>
+
+      {/* Logout Confirmation Modal */}
+      {showLogoutModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-xl shadow-2xl w-full max-w-md mx-4">
+            <div className="p-6">
+              <div className="text-center mb-6">
+                <div className="mx-auto flex items-center justify-center w-16 h-16 bg-red-100 rounded-full mb-4">
+                  <MdLogout className="w-8 h-8 text-red-600" />
+                </div>
+                <h3 className="text-xl font-semibold text-gray-900 mb-2">Confirm Logout</h3>
+                <p className="text-gray-600">
+                  Are you sure you want to logout? You will need to sign in again to access the director portal.
+                </p>
+              </div>
+              
+              <div className="flex gap-3">
+                <button
+                  onClick={cancelLogout}
+                  className="flex-1 px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-colors font-medium"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={confirmLogout}
+                  className="flex-1 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors font-medium"
+                >
+                  Logout
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useState, useEffect } from 'react';
 import { MdVisibility, MdEdit, MdDelete } from 'react-icons/md';
 import {
