@@ -1580,7 +1580,7 @@ const Examination = ({ onFullscreenChange, onModalStateChange }) => {
           <table className="examination-table w-full divide-y divide-gray-200 min-w-full">
             <thead className="bg-gray-50 sticky top-0 z-10 shadow-sm">
               <tr>
-                <th className="text-center text-xs font-medium text-gray-500 uppercase tracking-wider" style={{ position: 'sticky', left: 0, zIndex: 25, background: '#ffffff', minWidth: '40px', padding: '12px 6px', whiteSpace: 'nowrap' }}>
+                <th className="text-center text-xs font-medium text-gray-500 uppercase tracking-wider" style={{ position: 'sticky', left: 0, zIndex: 25, background: '#ffffff', width: '50px', minWidth: '50px', padding: '12px 6px', whiteSpace: 'nowrap' }}>
                   <input
                     type="checkbox"
                     checked={(() => {
@@ -1591,10 +1591,10 @@ const Examination = ({ onFullscreenChange, onModalStateChange }) => {
                     className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2 cursor-pointer"
                   />
                 </th>
-                <th className="text-center text-xs font-medium text-gray-500 uppercase tracking-wider" style={{ position: 'sticky', left: '40px', zIndex: 25, background: '#ffffff', minWidth: '55px', padding: '12px 6px', whiteSpace: 'nowrap' }}>S.NO</th>
-                <th className="text-left text-xs font-medium text-gray-500 uppercase tracking-wider" style={{ position: 'sticky', left: '95px', zIndex: 25, background: '#ffffff', minWidth: '160px', padding: '12px 8px', whiteSpace: 'nowrap' }}>REGISTERED NAME</th>
-                <th className="text-left text-xs font-medium text-gray-500 uppercase tracking-wider" style={{ position: 'sticky', left: '255px', zIndex: 25, background: '#ffffff', minWidth: '140px', padding: '12px 8px', whiteSpace: 'nowrap' }}>APPLICATION NO</th>
-                <th className="text-left text-xs font-medium text-gray-500 uppercase tracking-wider" style={{ position: 'sticky', left: '395px', zIndex: 25, background: '#ffffff', minWidth: '180px', padding: '12px 8px', whiteSpace: 'nowrap', boxShadow: '2px 0 5px -2px rgba(0,0,0,0.15)' }}>SELECT INSTITUTION</th>
+                <th className="text-center text-xs font-medium text-gray-500 uppercase tracking-wider" style={{ position: 'sticky', left: '50px', zIndex: 25, background: '#ffffff', width: '55px', minWidth: '55px', padding: '12px 6px', whiteSpace: 'nowrap' }}>S.NO</th>
+                <th className="text-left text-xs font-medium text-gray-500 uppercase tracking-wider" style={{ position: 'sticky', left: '105px', zIndex: 25, background: '#ffffff', width: '200px', minWidth: '200px', padding: '12px 8px', whiteSpace: 'nowrap' }}>REGISTERED NAME</th>
+                <th className="text-left text-xs font-medium text-gray-500 uppercase tracking-wider" style={{ position: 'sticky', left: '305px', zIndex: 25, background: '#ffffff', width: '140px', minWidth: '140px', padding: '12px 8px', whiteSpace: 'nowrap' }}>APPLICATION NO</th>
+                <th className="text-left text-xs font-medium text-gray-500 uppercase tracking-wider" style={{ position: 'sticky', left: '445px', zIndex: 25, background: '#ffffff', width: '250px', minWidth: '250px', padding: '12px 12px', whiteSpace: 'nowrap', boxShadow: '2px 0 5px -2px rgba(0,0,0,0.15)' }}>SELECT INSTITUTION</th>
                 <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider min-w-[250px]">SELECT PROGRAM</th>
                 <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">TYPE</th>
                 <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">MOBILE NUMBER</th>
@@ -1612,7 +1612,7 @@ const Examination = ({ onFullscreenChange, onModalStateChange }) => {
               {filteredData.length > 0 ? (
                 filteredData.map((item, index) => (
                   <tr key={item.id} className={`hover:bg-gray-50 transition-colors ${selectedScholars.includes(item.id) ? 'bg-blue-50' : ''}`}>
-                    <td className="text-center text-sm" style={{ position: 'sticky', left: 0, zIndex: 20, backgroundColor: selectedScholars.includes(item.id) ? '#eff6ff' : '#ffffff', minWidth: '40px', padding: '12px 6px', whiteSpace: 'nowrap' }}>
+                    <td className="text-center text-sm" style={{ position: 'sticky', left: 0, zIndex: 20, backgroundColor: selectedScholars.includes(item.id) ? '#eff6ff' : '#ffffff', width: '50px', minWidth: '50px', padding: '12px 6px', whiteSpace: 'nowrap' }}>
                       <input
                         type="checkbox"
                         checked={selectedScholars.includes(item.id)}
@@ -1625,10 +1625,10 @@ const Examination = ({ onFullscreenChange, onModalStateChange }) => {
                         title={item.status?.toLowerCase().includes('forwarded') ? 'Cannot select forwarded scholar' : ''}
                       />
                     </td>
-                    <td className="text-center text-sm font-medium text-gray-900" style={{ position: 'sticky', left: '40px', zIndex: 20, backgroundColor: selectedScholars.includes(item.id) ? '#eff6ff' : '#ffffff', minWidth: '55px', padding: '12px 6px', whiteSpace: 'nowrap' }}>{index + 1}</td>
-                    <td className="text-sm font-medium text-gray-900 text-left" style={{ position: 'sticky', left: '95px', zIndex: 20, backgroundColor: selectedScholars.includes(item.id) ? '#eff6ff' : '#ffffff', minWidth: '160px', padding: '12px 8px', whiteSpace: 'nowrap' }}>{item.registered_name || item.name}</td>
-                    <td className="text-sm font-medium text-left" style={{ position: 'sticky', left: '255px', zIndex: 20, backgroundColor: selectedScholars.includes(item.id) ? '#eff6ff' : '#ffffff', minWidth: '140px', padding: '12px 8px', whiteSpace: 'nowrap' }}>{item.application_no || item.id}</td>
-                    <td className="text-sm text-gray-900 text-left" style={{ position: 'sticky', left: '395px', zIndex: 20, backgroundColor: selectedScholars.includes(item.id) ? '#eff6ff' : '#ffffff', minWidth: '180px', padding: '12px 8px', whiteSpace: 'nowrap', boxShadow: '2px 0 5px -2px rgba(0,0,0,0.15)' }}>{item.faculty}</td>
+                    <td className="text-center text-sm font-medium text-gray-900" style={{ position: 'sticky', left: '50px', zIndex: 20, backgroundColor: selectedScholars.includes(item.id) ? '#eff6ff' : '#ffffff', width: '55px', minWidth: '55px', padding: '12px 6px', whiteSpace: 'nowrap' }}>{index + 1}</td>
+                    <td className="text-sm font-medium text-gray-900 text-left" style={{ position: 'sticky', left: '105px', zIndex: 20, backgroundColor: selectedScholars.includes(item.id) ? '#eff6ff' : '#ffffff', width: '200px', minWidth: '200px', padding: '12px 8px', whiteSpace: 'nowrap' }}>{item.registered_name || item.name}</td>
+                    <td className="text-sm font-medium text-left" style={{ position: 'sticky', left: '305px', zIndex: 20, backgroundColor: selectedScholars.includes(item.id) ? '#eff6ff' : '#ffffff', width: '140px', minWidth: '140px', padding: '12px 8px', whiteSpace: 'nowrap' }}>{item.application_no || item.id}</td>
+                    <td className="text-sm text-gray-900 text-left" style={{ position: 'sticky', left: '445px', zIndex: 20, backgroundColor: selectedScholars.includes(item.id) ? '#eff6ff' : '#ffffff', width: '250px', minWidth: '250px', padding: '12px 12px', whiteSpace: 'nowrap', boxShadow: '2px 0 5px -2px rgba(0,0,0,0.15)' }}>{item.faculty}</td>
                     <td className="px-4 py-3 text-sm text-gray-900 min-w-[250px] whitespace-normal text-left">{item.program || item.faculty}</td>
                     <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900 text-left">{item.program_type || item.type || item.programType}</td>
                     <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900 text-left">{item.mobile_number || item.mobile}</td>

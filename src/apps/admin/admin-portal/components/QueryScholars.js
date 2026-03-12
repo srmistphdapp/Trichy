@@ -36,9 +36,61 @@ const QueryScholars = ({ onFullscreenChange, onModalStateChange }) => {
   const [showBulkDeleteModal, setShowBulkDeleteModal] = useState(false);
   const [showBulkForwardModal, setShowBulkForwardModal] = useState(false);
 
+  // Download modal states
+  const [showDownloadModal, setShowDownloadModal] = useState(false);
+  const [selectedColumns, setSelectedColumns] = useState([]);
+
+  // All available columns for download
+  const ALL_AVAILABLE_COLUMNS = [
+    { key: 'S.No', label: 'S.No', category: 'Basic Information' },
+    { key: 'Application No', label: 'Application No', category: 'Basic Information' },
+    { key: 'Form Name', label: 'Form Name', category: 'Basic Information' },
+    { key: 'Current Status', label: 'Current Status', category: 'Basic Information' },
+    
+    { key: 'Registered Name', label: 'Registered Name', category: 'Personal Details' },
+    { key: 'Date of Birth', label: 'Date of Birth', category: 'Personal Details' },
+    { key: 'Gender', label: 'Gender', category: 'Personal Details' },
+    { key: 'Mobile Number', label: 'Mobile Number', category: 'Personal Details' },
+    { key: 'Email', label: 'Email', category: 'Personal Details' },
+    { key: 'Nationality', label: 'Nationality', category: 'Personal Details' },
+    
+    { key: 'Institution', label: 'Institution', category: 'Program Info' },
+    { key: 'Faculty', label: 'Faculty', category: 'Program Info' },
+    { key: 'Department', label: 'Department', category: 'Program Info' },
+    { key: 'Program', label: 'Program', category: 'Program Info' },
+    { key: 'Program Type', label: 'Program Type', category: 'Program Info' },
+    
+    { key: 'Department Query', label: 'Department Query', category: 'Query Info' },
+    { key: 'Query Resolved', label: 'Query Resolved', category: 'Query Info' },
+    { key: 'Query Faculty', label: 'Query Faculty', category: 'Query Info' },
+    
+    { key: 'UG Degree', label: 'UG Degree', category: 'UG Education' },
+    { key: 'UG Specialization', label: 'UG Specialization', category: 'UG Education' },
+    { key: 'UG CGPA/Percentage', label: 'UG CGPA/Percentage', category: 'UG Education' },
+    
+    { key: 'PG Degree', label: 'PG Degree', category: 'PG Education' },
+    { key: 'PG Specialization', label: 'PG Specialization', category: 'PG Education' },
+    { key: 'PG CGPA/Percentage', label: 'PG CGPA/Percentage', category: 'PG Education' },
+    
+    { key: 'Exam 1 Name', label: 'Exam 1 Name', category: 'Exams' },
+    { key: 'Exam 1 Score', label: 'Exam 1 Score', category: 'Exams' },
+    { key: 'Exam 2 Name', label: 'Exam 2 Name', category: 'Exams' },
+    { key: 'Exam 2 Score', label: 'Exam 2 Score', category: 'Exams' },
+    
+    { key: 'Research Interest', label: 'Research Interest', category: 'Research Info' },
+    { key: 'Reasons for Applying', label: 'Reasons for Applying', category: 'Research Info' },
+    
+    { key: 'Status', label: 'Status', category: 'System Info' },
+    { key: 'Certificates', label: 'Certificates', category: 'System Info' },
+    { key: 'User ID', label: 'User ID', category: 'System Info' },
+    { key: 'Created At', label: 'Created At', category: 'System Info' }
+  ];
+
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedFaculty, setSelectedFaculty] = useState('');
+  const [selectedDepartment, setSelectedDepartment] = useState('');
   const [selectedType, setSelectedType] = useState('');
+
   const [sortConfig, setSortConfig] = useState({ field: 'sNo', direction: 'asc' });
   const [formData, setFormData] = useState({
     applicationNo: '',
@@ -133,6 +185,26 @@ const QueryScholars = ({ onFullscreenChange, onModalStateChange }) => {
     cgpa: ''
   });
 
+  // Helper function for download modal
+  const toggleColumnSelection = (colKey) => {
+    setSelectedColumns(prev => 
+      prev.includes(colKey) ? prev.filter(k => k !== colKey) : [...prev, colKey]
+    );
+  };
+
+  const selectAllColumns = () => {
+    setSelectedColumns(ALL_AVAILABLE_COLUMNS.map(col => col.key));
+  };
+
+  const deselectAllColumns = () => {
+    setSelectedColumns([]);
+  };
+
+  const handleDownloadClick = () => {
+    setSelectedColumns(ALL_AVAILABLE_COLUMNS.map(col => col.key));
+    setShowDownloadModal(true);
+  };
+
   // Fetch scholars with queries from Supabase
   useEffect(() => {
     const loadScholarsWithQueries = async () => {
@@ -170,6 +242,24 @@ const QueryScholars = ({ onFullscreenChange, onModalStateChange }) => {
 
     loadDepartments();
   }, [formData.faculty]);
+
+  // Fetch departments for filter when selectedFaculty changes
+  useEffect(() => {
+    const loadFilterDepartments = async () => {
+      if (selectedFaculty) {
+        const { data, error } = await fetchDepartmentsByFaculty(selectedFaculty);
+        if (error) {
+          console.error('Failed to load filter departments:', error);
+        } else if (data) {
+          setDepartments(data);
+        }
+      } else {
+        setSelectedDepartment(''); // Clear department selection when faculty is cleared
+      }
+    };
+
+    loadFilterDepartments();
+  }, [selectedFaculty]);
 
   // Use backToDirectorScholars instead of filtering from scholarsData
   const verifiedScholars = backToDirectorScholars;
@@ -290,7 +380,7 @@ const QueryScholars = ({ onFullscreenChange, onModalStateChange }) => {
     setEditingScholar(scholar);
     
     // Fetch complete scholar data from Supabase
-    console.log('📝 Fetching complete scholar data for ID:', scholar.id);
+    console.log('ðŸ“ Fetching complete scholar data for ID:', scholar.id);
     const { fetchScholarById } = await import('../../../../services/scholarService');
     const { data: fullScholarData, error } = await fetchScholarById(scholar.id);
     
@@ -299,7 +389,7 @@ const QueryScholars = ({ onFullscreenChange, onModalStateChange }) => {
       // Fallback to using the scholar object from table
       populateFormData(scholar);
     } else if (fullScholarData) {
-      console.log('✅ Complete scholar data fetched from Supabase');
+      console.log('âœ… Complete scholar data fetched from Supabase');
       populateFormData(fullScholarData);
     } else {
       // Fallback to using the scholar object from table
@@ -1047,18 +1137,87 @@ const QueryScholars = ({ onFullscreenChange, onModalStateChange }) => {
     }
   };
 
-
+  // Handle delete pending duplicates - Only delete scholars with status = 'Pending'
+  const handleDeletePendingDuplicates = async () => {
+    try {
+      // Find all duplicate groups
+      const duplicates = [];
+      const appNoMap = new Map();
+      
+      // Group scholars by application number
+      backToDirectorScholars.forEach(scholar => {
+        const appNo = scholar.application_no || scholar.applicationNo;
+        if (appNo && typeof appNo === 'string') {
+          const normalizedAppNo = appNo.trim();
+          if (normalizedAppNo) {
+            if (!appNoMap.has(normalizedAppNo)) {
+              appNoMap.set(normalizedAppNo, []);
+            }
+            appNoMap.get(normalizedAppNo).push(scholar);
+          }
+        }
+      });
+      
+      // Find scholars to delete (only Pending status in duplicate groups)
+      const scholarsToDelete = [];
+      appNoMap.forEach((scholars, appNo) => {
+        if (scholars.length > 1) {
+          // This is a duplicate group
+          // Delete only scholars with status = 'Pending'
+          const pendingScholars = scholars.filter(s => s.status === 'Pending');
+          scholarsToDelete.push(...pendingScholars);
+        }
+      });
+      
+      if (scholarsToDelete.length === 0) {
+        showMessage('No pending duplicate scholars found to delete', 'info');
+        return;
+      }
+      
+      // Confirm before deleting
+      const confirmDelete = window.confirm(
+        `Found ${scholarsToDelete.length} pending duplicate scholar(s).\n\n` +
+        `This will delete ONLY scholars with status = 'Pending'.\n` +
+        `Scholars with 'Forwarded' status will be kept safe.\n\n` +
+        `Do you want to proceed?`
+      );
+      
+      if (!confirmDelete) {
+        return;
+      }
+      
+      // Delete the scholars
+      const idsToDelete = scholarsToDelete.map(s => s.id);
+      setBackToDirectorScholars(prev => prev.filter(s => !idsToDelete.includes(s.id)));
+      setScholarsData(prev => prev.filter(s => !idsToDelete.includes(s.id)));
+      
+      showMessage(`Successfully deleted ${scholarsToDelete.length} pending duplicate scholar(s)`, 'success');
+      
+      // Close duplicates modal if open
+      setShowDuplicatesModal(false);
+      
+    } catch (error) {
+      console.error('Error deleting pending duplicates:', error);
+      showMessage('Failed to delete pending duplicates', 'error');
+    }
+  };
 
   // Handle download excel
-  const handleDownloadExcel = () => {
+  const confirmDownloadExcel = () => {
+    if (selectedColumns.length === 0) {
+      alert('Please select at least one column to download.');
+      return;
+    }
+
     try {
       // Prepare comprehensive data with all fields
-      const excelData = backToDirectorScholars.map((scholar, index) => {
+      const fullExcelData = backToDirectorScholars.map((scholar, index) => {
         return {
           // Basic Information
           'S.No': index + 1,
           'Application No': scholar.application_no || scholar.applicationNo || '',
           'Form Name': scholar.form_name || scholar.formName || 'PhD Application Form',
+          'Current Status': scholar.status || '',
           
           // Personal Details
           'Registered Name': scholar.registered_name || scholar.name || '',
@@ -1067,138 +1226,102 @@ const QueryScholars = ({ onFullscreenChange, onModalStateChange }) => {
           'Mobile Number': scholar.mobile_number || scholar.mobile || scholar.phone || '',
           'Email': scholar.email || scholar.email_id || '',
           'Nationality': scholar.nationality || 'Indian',
-          'Aadhaar No': scholar.aadhaar_no || scholar.aadhaarNo || '',
-          'Differently Abled': scholar.differently_abled || scholar.differentlyAbled || 'No',
-          'Nature of Deformity': scholar.nature_of_deformity || scholar.natureOfDeformity || '',
-          'Percentage of Deformity': scholar.percentage_of_deformity || scholar.percentageOfDeformity || '',
           
-          // Application Status
+          // Program Information
+          'Institution': scholar.institution || 'SRM Institute of Science and Technology',
           'Faculty': scholar.faculty || '',
           'Department': scholar.department || '',
           'Program': scholar.program || '',
           'Program Type': scholar.type || '',
-          'Status': scholar.status || '',
-          'Institution': scholar.institution || 'SRM Institute of Science and Technology',
           
           // Query Information
           'Department Query': scholar.dept_query || '',
           'Query Resolved': scholar.query_resolved || '',
           'Query Faculty': scholar.query_faculty || '',
           
-          // Education Background
-          'Graduated From India': scholar.graduated_from_india || scholar.graduatedFromIndia || 'Yes',
-          'Course': scholar.course || '',
-          'Mode of Profession': scholar.mode_of_profession || scholar.modeOfProfession || 'Academic',
-          'Area of Interest': scholar.area_of_interest || scholar.areaOfInterest || '',
-          
-          // Employment Details
-          'Employee ID': scholar.employee_id || scholar.employeeId || '',
-          'Designation': scholar.designation || '',
-          'Organization Name': scholar.organization_name || scholar.organizationName || '',
-          'Organization Address': scholar.organization_address || scholar.organizationAddress || '',
-          
           // UG Education
-          'UG Qualification': scholar.ug_qualification || scholar.ugQualification || '',
-          'UG Institute': scholar.ug_institute || scholar.ugInstitute || scholar.ugInstitution || '',
           'UG Degree': scholar.ug_degree || scholar.ugDegree || '',
           'UG Specialization': scholar.ug_specialization || scholar.ugSpecialization || '',
-          'UG Marking Scheme': scholar.ug_marking_scheme || scholar.ugMarkingScheme || '',
           'UG CGPA/Percentage': scholar.ug_cgpa || scholar.ugCgpa || scholar.ugMarks || '',
-          'UG Month & Year': scholar.ug_month_year || scholar.ugMonthYear || scholar.ugYear || '',
-          'UG Registration No': scholar.ug_registration_no || scholar.ugRegistrationNo || '',
-          'UG Mode of Study': scholar.ug_mode_of_study || scholar.ugModeOfStudy || '',
-          'UG Place of Institution': scholar.ug_place_of_institution || scholar.ugPlaceOfInstitution || '',
           
           // PG Education
-          'PG Qualification': scholar.pg_qualification || scholar.pgQualification || '',
-          'PG Institute': scholar.pg_institute || scholar.pgInstitute || scholar.pgInstitution || '',
           'PG Degree': scholar.pg_degree || scholar.pgDegree || '',
           'PG Specialization': scholar.pg_specialization || scholar.pgSpecialization || '',
-          'PG Marking Scheme': scholar.pg_marking_scheme || scholar.pgMarkingScheme || '',
           'PG CGPA/Percentage': scholar.pg_cgpa || scholar.pgCgpa || scholar.pgMarks || '',
-          'PG Month & Year': scholar.pg_month_year || scholar.pgMonthYear || scholar.pgYear || '',
-          'PG Registration No': scholar.pg_registration_no || scholar.pgRegistrationNo || '',
-          'PG Mode of Study': scholar.pg_mode_of_study || scholar.pgModeOfStudy || '',
-          'PG Place of Institution': scholar.pg_place_of_institution || scholar.pgPlaceOfInstitution || '',
           
-          // Other Degree
-          'Other Qualification': scholar.other_qualification || scholar.otherQualification || '',
-          'Other Institute': scholar.other_institute || scholar.otherInstitute || scholar.otherInstitution || '',
-          'Other Degree': scholar.other_degree || scholar.otherDegree || scholar.otherDegreeName || '',
-          'Other Specialization': scholar.other_specialization || scholar.otherSpecialization || '',
-          'Other Marking Scheme': scholar.other_marking_scheme || scholar.otherMarkingScheme || '',
-          'Other CGPA/Percentage': scholar.other_cgpa || scholar.otherCgpa || scholar.otherMarks || '',
-          'Other Month & Year': scholar.other_month_year || scholar.otherMonthYear || scholar.otherYear || '',
-          'Other Registration No': scholar.other_registration_no || scholar.otherRegistrationNo || '',
-          'Other Mode of Study': scholar.other_mode_of_study || scholar.otherModeOfStudy || '',
-          'Other Place of Institution': scholar.other_place_of_institution || scholar.otherPlaceOfInstitution || '',
-          
-          // Competitive Exams - Exam 1
+          // Competitive Exams
           'Exam 1 Name': scholar.exam1_name || scholar.exam1Name || scholar.gateExam || '',
-          'Exam 1 Registration No': scholar.exam1_reg_no || scholar.exam1RegNo || scholar.gateRollNo || '',
           'Exam 1 Score': scholar.exam1_score || scholar.exam1Score || scholar.gateScore || '',
-          'Exam 1 Max Score': scholar.exam1_max_score || scholar.exam1MaxScore || '',
-          'Exam 1 Year': scholar.exam1_year || scholar.exam1Year || scholar.gateYear || '',
-          'Exam 1 Rank': scholar.exam1_rank || scholar.exam1Rank || scholar.gateRank || '',
-          'Exam 1 Qualified': scholar.exam1_qualified || scholar.exam1Qualified || '',
-          
-          // Competitive Exams - Exam 2
           'Exam 2 Name': scholar.exam2_name || scholar.exam2Name || scholar.netExam || '',
-          'Exam 2 Registration No': scholar.exam2_reg_no || scholar.exam2RegNo || scholar.netRollNo || '',
           'Exam 2 Score': scholar.exam2_score || scholar.exam2Score || scholar.netScore || '',
-          'Exam 2 Max Score': scholar.exam2_max_score || scholar.exam2MaxScore || '',
-          'Exam 2 Year': scholar.exam2_year || scholar.exam2Year || scholar.netYear || '',
-          'Exam 2 Rank': scholar.exam2_rank || scholar.exam2Rank || scholar.netRank || '',
-          'Exam 2 Qualified': scholar.exam2_qualified || scholar.exam2Qualified || '',
           
-          // Competitive Exams - Exam 3
-          'Exam 3 Name': scholar.exam3_name || scholar.exam3Name || scholar.otherExamName || '',
-          'Exam 3 Registration No': scholar.exam3_reg_no || scholar.exam3RegNo || scholar.otherExamRollNo || '',
-          'Exam 3 Score': scholar.exam3_score || scholar.exam3Score || scholar.otherExamScore || '',
-          'Exam 3 Max Score': scholar.exam3_max_score || scholar.exam3MaxScore || '',
-          'Exam 3 Year': scholar.exam3_year || scholar.exam3Year || scholar.otherExamYear || '',
-          'Exam 3 Rank': scholar.exam3_rank || scholar.exam3Rank || scholar.otherExamRank || '',
-          'Exam 3 Qualified': scholar.exam3_qualified || scholar.exam3Qualified || '',
-          
-          // Research Interest
+          // Research Information
           'Research Interest': scholar.research_interest || scholar.researchInterest || '',
           'Reasons for Applying': scholar.reasons_for_applying || scholar.reasonsForApplying || '',
+          
+          // System Info
+          'Status': scholar.status || '',
           'Certificates': scholar.certificates || 'Available',
-          
-          // System Fields
           'User ID': scholar.user_id || scholar.userId || '',
-          'Created At': scholar.created_at || scholar.createdAt || '',
-          'Updated At': scholar.updated_at || scholar.updatedAt || '',
-          
-          // Status Fields
-          'Faculty Status': scholar.faculty_status || scholar.facultyStatus || '',
-          'Department Review': scholar.dept_review || scholar.deptReview || '',
-          'Coordinator Status': scholar.coordinator_status || scholar.coordinatorStatus || '',
-          'Director Status': scholar.director_status || scholar.directorStatus || ''
+          'Created At': scholar.created_at || scholar.createdAt || ''
         };
+      });
+
+      // Filter object properties based on user selection
+      const excelData = fullExcelData.map(row => {
+        const filteredObj = {};
+        // Use ALL_AVAILABLE_COLUMNS to maintain original ordering
+        ALL_AVAILABLE_COLUMNS.forEach(col => {
+          if (selectedColumns.includes(col.key) && row[col.key] !== undefined) {
+            filteredObj[col.key] = row[col.key];
+          }
+        });
+        return filteredObj;
       });
 
       // Create worksheet
       const ws = XLSX.utils.json_to_sheet(excelData);
-      
-      // Set column widths for better readability
-      const colWidths = Object.keys(excelData[0] || {}).map(() => ({ wch: 20 }));
-      ws['!cols'] = colWidths;
-      
+
+      // Set column widths based on selected columns
+      const columnWidths = ALL_AVAILABLE_COLUMNS
+        .filter(col => selectedColumns.includes(col.key))
+        .map(col => {
+          if (col.key === 'S.No') return { wch: 8 };
+          if (col.key === 'Email' || col.key === 'Institution') return { wch: 30 };
+          if (col.key === 'Department' || col.key === 'Faculty') return { wch: 35 };
+          return { wch: 20 };
+        });
+
+      ws['!cols'] = columnWidths;
+
+      // Style the header row (first row)
+      const range = XLSX.utils.decode_range(ws['!ref']);
+      for (let C = range.s.c; C <= range.e.c; ++C) {
+        const address = XLSX.utils.encode_col(C) + "1";
+        if (!ws[address]) continue;
+        ws[address].s = {
+          font: { bold: true, color: { rgb: "FFFFFF" } },
+          fill: { fgColor: { rgb: "4472C4" } },
+          alignment: { horizontal: "center", vertical: "center", wrapText: true }
+        };
+      }
+
       // Create workbook and add worksheet
       const wb = XLSX.utils.book_new();
       XLSX.utils.book_append_sheet(wb, ws, 'Query Scholars');
-      
+
       // Generate filename with timestamp
-      const filename = `Query_Scholars_${new Date().toISOString().split('T')[0]}_${new Date().getTime()}.xlsx`;
-      
+      const timestamp = new Date().toISOString().replace(/[:.]/g, '-').split('T');
+      const filename = `Query_Scholars_${timestamp[0]}_${timestamp[1].split('-')[0]}.xlsx`;
+
       // Download file
       XLSX.writeFile(wb, filename);
-      
-      showMessage(`Excel file downloaded successfully! (${backToDirectorScholars.length} scholars)`, 'success');
+
+      setShowDownloadModal(false);
+      alert(`Excel file downloaded successfully! (${backToDirectorScholars.length} records)`);
     } catch (error) {
       console.error('Error generating Excel file:', error);
-      showMessage('Error generating Excel file. Please try again.', 'error');
+      alert('Error generating Excel file. Please try again.');
     }
   };
 
@@ -1488,6 +1611,7 @@ const QueryScholars = ({ onFullscreenChange, onModalStateChange }) => {
     setShowFilterModal(false);
     const activeFilters = [];
     if (selectedFaculty) activeFilters.push(`Faculty: ${selectedFaculty}`);
+    if (selectedDepartment) activeFilters.push(`Department: ${selectedDepartment}`);
     if (selectedType) activeFilters.push(`Type: ${selectedType}`);
 
     if (activeFilters.length > 0) {
@@ -1500,6 +1624,7 @@ const QueryScholars = ({ onFullscreenChange, onModalStateChange }) => {
   // Clear all filters
   const clearFilters = () => {
     setSelectedFaculty('');
+    setSelectedDepartment('');
     setSelectedType('');
     setSearchTerm('');
     showMessage('All filters and search cleared', 'info');
@@ -1518,13 +1643,14 @@ const QueryScholars = ({ onFullscreenChange, onModalStateChange }) => {
   useEffect(() => {
     const hasModal = showModal || showViewModal || showUploadModal || showFilterModal || 
                     showHelpModal || showForwardModal || showForwardAllModal || 
-                    showDeleteModal || showDuplicatesModal || showQueryResolvedModal;
+                    showDeleteModal || showDuplicatesModal || showQueryResolvedModal ||
+                    showDownloadModal; // ensure sidebar hides for downloads
     
     if (onModalStateChange) {
       onModalStateChange(hasModal);
     }
   }, [showModal, showViewModal, showUploadModal, showFilterModal, showHelpModal, 
-      showForwardModal, showForwardAllModal, showDeleteModal, showDuplicatesModal, showQueryResolvedModal, onModalStateChange]);
+      showForwardModal, showForwardAllModal, showDeleteModal, showDuplicatesModal, showQueryResolvedModal, showDownloadModal, onModalStateChange]);
 
   // Filter and sort scholars
   const getFilteredScholars = () => {
@@ -1546,9 +1672,11 @@ const QueryScholars = ({ onFullscreenChange, onModalStateChange }) => {
         faculty.toLowerCase().includes(searchTerm.toLowerCase());
       
       const matchesFaculty = selectedFaculty === '' || faculty === selectedFaculty;
+      const matchesDepartment = selectedDepartment === '' || 
+        (department && department.toLowerCase().includes(selectedDepartment.toLowerCase()));
       const matchesType = selectedType === '' || (scholar.type || '') === selectedType;
 
-      return matchesSearch && matchesFaculty && matchesType;
+      return matchesSearch && matchesFaculty && matchesDepartment && matchesType;
     });
 
     // Apply sorting using sortConfig
@@ -1690,7 +1818,7 @@ const QueryScholars = ({ onFullscreenChange, onModalStateChange }) => {
                 </svg>
                 <span className="font-semibold">Forward All</span>
               </button>
-              <button onClick={handleDownloadExcel} className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2">
+              <button onClick={handleDownloadClick} className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2">
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                 </svg>
@@ -1928,7 +2056,7 @@ const QueryScholars = ({ onFullscreenChange, onModalStateChange }) => {
               </div>
               <h3>No Scholars Found</h3>
               <p>
-                {searchTerm || selectedFaculty || selectedType
+                {searchTerm || selectedFaculty || selectedDepartment || selectedType
                   ? 'No scholars match your current search criteria.'
                   : 'No scholars have been added yet.'}
               </p>
@@ -2400,12 +2528,29 @@ const QueryScholars = ({ onFullscreenChange, onModalStateChange }) => {
                     <label>Faculty</label>
                     <select
                       value={selectedFaculty}
-                      onChange={(e) => setSelectedFaculty(e.target.value)}
+                      onChange={(e) => {
+                        setSelectedFaculty(e.target.value);
+                        setSelectedDepartment(''); // Clear department when faculty changes
+                      }}
                       className="filter-select"
                     >
                       <option value="">All Faculties</option>
                       {facultiesData.map(faculty => (
                         <option key={faculty.id} value={faculty.name}>{faculty.name}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="filter-group">
+                    <label>Department</label>
+                    <select
+                      value={selectedDepartment}
+                      onChange={(e) => setSelectedDepartment(e.target.value)}
+                      className="filter-select"
+                      disabled={!selectedFaculty}
+                    >
+                      <option value="">All Departments</option>
+                      {departments.map(dept => (
+                        <option key={dept.id} value={dept.department_name}>{dept.department_name}</option>
                       ))}
                     </select>
                   </div>
@@ -2518,7 +2663,7 @@ const QueryScholars = ({ onFullscreenChange, onModalStateChange }) => {
                   <ul>
                     <li>Use the search bar to quickly find scholars by name, application number, or department</li>
                     <li>Click on column headers to sort data</li>
-                    <li>Use filters to narrow down results by faculty or type</li>
+                    <li>Use filters to narrow down results by faculty, type, or status</li>
                     <li>Bulk operations help process multiple scholars at once</li>
                     <li>Certificate viewer opens in a new window for detailed document review</li>
                   </ul>
@@ -2874,8 +3019,8 @@ const QueryScholars = ({ onFullscreenChange, onModalStateChange }) => {
                     </span>
                   </div>
                   <div className="view-field">
-                    <label className="view-label">Queries:</label>
-                    <span className="view-value">{viewingScholar.dept_query || '-'}</span>
+                    <label className="view-label">Rejection Reason:</label>
+                    <span className="view-value">{viewingScholar.reject_reason || '-'}</span>
                   </div>
                   <div className="view-field">
                     <label className="view-label">Faculty Forward Status:</label>
@@ -3454,6 +3599,182 @@ const QueryScholars = ({ onFullscreenChange, onModalStateChange }) => {
                   Confirm
                 </button>
               </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Download Column Selection Modal */}
+      {showDownloadModal && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[100] p-4 animate-fade-in">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] flex flex-col transform transition-all duration-300 scale-100 relative overflow-hidden">
+            {/* Header */}
+            <div className="bg-gradient-to-r from-blue-600 to-blue-700 p-6 flex justify-between items-center shrink-0">
+              <div className="flex items-center gap-3">
+                <div className="bg-white/20 p-2 rounded-lg backdrop-blur-sm">
+                  <svg className="text-white text-xl w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                  </svg>
+                </div>
+                <div>
+                  <h3 className="text-xl font-bold text-white">Select Columns to Export</h3>
+                  <p className="text-blue-100 text-sm mt-1">Choose which data fields to include in your Excel file</p>
+                </div>
+              </div>
+              <button
+                onClick={() => setShowDownloadModal(false)}
+                className="text-white/80 hover:text-white hover:bg-white/10 p-2 rounded-full transition-colors"
+              >
+                <svg className="text-xl w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+
+            {/* Global Controls */}
+            <div className="bg-gray-50 border-b border-gray-100 p-4 flex justify-between items-center shrink-0">
+              <div className="flex items-center gap-2">
+                <span className="text-sm font-medium text-gray-600 bg-white px-3 py-1.5 rounded-full shadow-sm border border-gray-200 divide-x divide-gray-200">
+                  <span className="pr-3 text-blue-600 font-bold">{selectedColumns.length}</span>
+                  <span className="pl-3">columns selected</span>
+                </span>
+              </div>
+              <div className="flex gap-2">
+                <button
+                  onClick={selectAllColumns}
+                  className="text-sm px-4 py-2 bg-white border border-gray-200 text-gray-700 hover:bg-blue-50 hover:text-blue-700 hover:border-blue-200 rounded-lg transition-all font-medium flex items-center gap-2 shadow-sm"
+                >
+                  <div className="w-3 h-3 rounded-full bg-blue-500"></div>
+                  Select All
+                </button>
+                <button
+                  onClick={deselectAllColumns}
+                  className="text-sm px-4 py-2 bg-white border border-gray-200 text-gray-700 hover:bg-red-50 hover:text-red-700 hover:border-red-200 rounded-lg transition-all font-medium flex items-center gap-2 shadow-sm"
+                >
+                  <div className="w-3 h-3 rounded-full bg-red-400 border border-red-500"></div>
+                  Deselect All
+                </button>
+              </div>
+            </div>
+
+            {/* Scrollable Content - Categorized Columns */}
+            <div className="p-6 overflow-y-auto bg-gray-50/50 flex-1 custom-scrollbar">
+              <div className="space-y-8">
+                {Array.from(new Set(ALL_AVAILABLE_COLUMNS.map(c => c.category))).map((category) => {
+                  const categoryColumns = ALL_AVAILABLE_COLUMNS.filter(c => c.category === category);
+                  const isAllInCategorySelected = categoryColumns.every(col => selectedColumns.includes(col.key));
+                  const isSomeInCategorySelected = categoryColumns.some(col => selectedColumns.includes(col.key));
+
+                  return (
+                    <div key={category} className="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+                      <div className="bg-gray-100/80 px-5 py-3 border-b border-gray-200 flex justify-between items-center">
+                        <div className="flex items-center gap-3">
+                          <h4 className="font-semibold text-gray-800">{category}</h4>
+                          <span className="text-xs bg-gray-200 text-gray-600 px-2 py-1 rounded-full font-medium">
+                            {categoryColumns.length} fields
+                          </span>
+                        </div>
+                        <button
+                          onClick={() => {
+                            if (isAllInCategorySelected) {
+                              // Deselect all in category
+                              setSelectedColumns(prev => prev.filter(key => !categoryColumns.find(c => c.key === key)));
+                            } else {
+                              // Select all in category
+                              setSelectedColumns(prev => {
+                                const newSelection = [...prev];
+                                categoryColumns.forEach(col => {
+                                  if (!newSelection.includes(col.key)) newSelection.push(col.key);
+                                });
+                                return newSelection;
+                              });
+                            }
+                          }}
+                          className={`text-xs px-3 py-1.5 rounded-md transition-all font-medium flex items-center gap-1.5
+                            ${isAllInCategorySelected 
+                              ? 'bg-blue-100 text-blue-700 hover:bg-blue-200' 
+                              : 'bg-white border border-gray-300 text-gray-600 hover:bg-gray-50'}`}
+                        >
+                          {isAllInCategorySelected ? (
+                            <>
+                              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
+                              All Selected
+                            </>
+                          ) : (
+                            <>
+                              <div className={`w-3.5 h-3.5 rounded-sm border ${isSomeInCategorySelected ? 'bg-blue-500 border-blue-500 flex items-center justify-center' : 'border-gray-400'}`}>
+                                {isSomeInCategorySelected && <div className="w-1.5 h-0.5 bg-white"></div>}
+                              </div>
+                              Select All
+                            </>
+                          )}
+                        </button>
+                      </div>
+                      <div className="p-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                          {categoryColumns.map((col) => (
+                            <label
+                              key={col.key}
+                              className={`flex items-start gap-3 p-3 rounded-lg border cursor-pointer transition-all duration-200
+                                ${selectedColumns.includes(col.key)
+                                  ? 'bg-blue-50/50 border-blue-200 hover:bg-blue-50'
+                                  : 'bg-white border-gray-100 hover:border-blue-200 hover:bg-gray-50'
+                                }`}
+                            >
+                              <div className="relative flex items-center justify-center mt-0.5 shrink-0">
+                                <input
+                                  type="checkbox"
+                                  checked={selectedColumns.includes(col.key)}
+                                  onChange={() => toggleColumnSelection(col.key)}
+                                  className="peer appearance-none w-5 h-5 border-2 border-gray-300 rounded focus:ring-2 focus:ring-blue-500/30 focus:outline-none checked:bg-blue-500 checked:border-blue-500 transition-all cursor-pointer"
+                                />
+                                <svg 
+                                  className="absolute w-3 h-3 text-white pointer-events-none opacity-0 peer-checked:opacity-100 transition-opacity" 
+                                  fill="none" 
+                                  viewBox="0 0 24 24" 
+                                  stroke="currentColor" 
+                                  strokeWidth="3"
+                                >
+                                  <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                                </svg>
+                              </div>
+                              <span className={`text-sm leading-tight select-none pt-0.5 ${
+                                selectedColumns.includes(col.key) ? 'text-blue-800 font-medium' : 'text-gray-700'
+                              }`}>
+                                {col.label}
+                              </span>
+                            </label>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Footer */}
+            <div className="bg-white border-t border-gray-200 p-5 flex justify-end gap-3 shrink-0">
+              <button
+                onClick={() => setShowDownloadModal(false)}
+                className="px-6 py-2.5 text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 rounded-xl font-medium transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={confirmDownloadExcel}
+                disabled={selectedColumns.length === 0}
+                className={`px-6 py-2.5 rounded-xl font-semibold flex items-center gap-2 transition-all shadow-sm ${
+                  selectedColumns.length > 0
+                    ? 'bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white hover:shadow-md'
+                    : 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                }`}
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                </svg>
+                Export {selectedColumns.length > 0 ? `(${selectedColumns.length})` : ''}
+              </button>
             </div>
           </div>
         </div>

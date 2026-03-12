@@ -322,6 +322,13 @@
   scroll-behavior: smooth;
   margin-right: 0 !important;
   margin-left: 0 !important;
+  box-sizing: border-box !important;
+}
+
+.examination-table *,
+.examination-table *::before,
+.examination-table *::after {
+  box-sizing: border-box !important;
 }
 
 /* Ensure sticky header works perfectly with scrolling */
