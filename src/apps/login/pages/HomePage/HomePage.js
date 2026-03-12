@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import './HomePage.css';
 import { Link } from 'react-router-dom';
+import trichyCampusImg from './../../assets/trp-home.jpg'; 
 
 // Image URLs
 const logoUrl = 'https://logodix.com/logo/1787040.png';
 const ramapuramCampusImg = 'https://image-static.collegedunia.com/public/college_data/images/campusimage/15857152965.JPG';
-const trichyCampusImg = 'https://kalvium.com/wp-content/uploads/2025/03/Screenshot-2025-03-15-114444.png';
 
 const HomePage = () => {
   const [currentSlide, setCurrentSlide] = useState(0);

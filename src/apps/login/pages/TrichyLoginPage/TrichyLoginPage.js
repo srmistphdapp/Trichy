@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Crown, UserCog, BookOpen, Building2 } from 'lucide-react';
 
+import trpLogo from './../../assets/trp-logo.png';
 import './TrichyLoginPage.css';
 import LoginForm from './LoginForm.js';
 
@@ -33,7 +34,7 @@ const TrichyLoginPage = () => {
           <div className="flex flex-col sm:grid sm:grid-cols-3 items-center gap-2 sm:gap-0">
             <div className="flex items-center justify-center sm:justify-start">
               <img 
-                src="https://srmrmp.edu.in/wp-content/uploads/2025/02/New-Logo-SRM-02-1-768x335.png"
+                src={trpLogo}
                 alt="SRM Trichy Logo"
                 className="h-8 sm:h-10 lg:h-12 w-auto"
               />

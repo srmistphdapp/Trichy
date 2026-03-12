@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { Crown, UserCog, BookOpen, Building2 } from 'lucide-react';
 import { switchCampus } from '../../../../supabaseClient';
 
+import trpLogo from './../../assets/trp-logo.png';
 import './UnifiedLoginPage.css';
 import LoginForm from '../RmpLoginPage/LoginForm.js';
 
@@ -67,9 +68,9 @@ const UnifiedLoginPage = () => {
                     <div className="flex flex-col sm:grid sm:grid-cols-3 items-center gap-2 sm:gap-0">
                         <div className="flex items-center justify-center sm:justify-start">
                             <img
-                                src="https://srmrmp.edu.in/wp-content/uploads/2025/02/New-Logo-SRM-02-1-768x335.png"
+                                src={selectedCampus === 'trp' ? trpLogo : 'https://srmrmp.edu.in/wp-content/uploads/2025/02/New-Logo-SRM-02-1-768x335.png'}
                                 alt="SRM Logo"
-                                className="h-8 sm:h-10 lg:h-12 w-auto"
+                                className="h-10 sm:h-12 lg:h-14 w-auto"
                             />
                         </div>
                         <div className="text-center">
@@ -89,29 +90,6 @@ const UnifiedLoginPage = () => {
 
             <div className={config.container}>
                 <main className={config.main}>
-                    {/* Campus Selector */}
-                    <section className="w-full max-w-3xl mx-auto px-3 sm:px-4 lg:px-6 mb-4">
-                        <div className="flex justify-center gap-3">
-                            <button
-                                className={`px-6 py-2 rounded-xl font-semibold transition-all duration-300 backdrop-blur-md border border-white/20 text-sm ${selectedCampus === 'rmp'
-                                        ? 'bg-white text-primary-900 shadow-xl scale-105'
-                                        : 'bg-white/10 text-white hover:bg-white/20 hover:scale-105'
-                                    }`}
-                                onClick={() => handleCampusChange('rmp')}
-                            >
-                                Ramapuram
-                            </button>
-                            <button
-                                className={`px-6 py-2 rounded-xl font-semibold transition-all duration-300 backdrop-blur-md border border-white/20 text-sm ${selectedCampus === 'trp'
-                                        ? 'bg-white text-primary-900 shadow-xl scale-105'
-                                        : 'bg-white/10 text-white hover:bg-white/20 hover:scale-105'
-                                    }`}
-                                onClick={() => handleCampusChange('trp')}
-                            >
-                                Trichy
-                            </button>
-                        </div>
-                    </section>
 
                     {/* Role Selection */}
                     <section className={config.roleSection}>
